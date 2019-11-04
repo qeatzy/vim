@@ -1,0 +1,15 @@
+snippet sni
+snippet
+endsnippet
+
+snippet sn "" b
+snippet ${1:trigger}
+endsnippet${0:}
+endsnippet
+
+# visual 
+snippet snv
+snippet !${1:name}! "s/${2:pat}/${3:replace}/g visual" A
+\$\{VISUAL:/$2/$3/g\}
+endsnippet${0:}
+endsnippet

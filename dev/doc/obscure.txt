@@ -1,0 +1,5 @@
+https://stackoverflow.com/questions/18126696/vim-edit-a-symlink
+Alternatively, for files, there's the rather obscure backtick expansion of Vimscript:
+:e `=resolve(expand("~/.vimrc"))`<CR>
+
+

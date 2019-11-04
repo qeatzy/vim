@@ -1,0 +1,26 @@
+# {{{ VISUAL transformation
+
+# not work, "  ", !  !, or no delimiter, none work. use <space>a instead.
+# use plain viw then r<space> to transform to space
+# ultisnips ${VISUAL} has all kind of bug, eg, add extra char.
+# # snippet  a "s/./ /g visual" A
+# # ${VISUAL:/./ /g}
+# # endsnippet
+
+snippet date ""
+`!v strftime("%Y-%m-%d")`
+endsnippet
+
+# " _", ! _! not work, no delimiter work.
+snippet " _" "s/ /_/g visual, trigger with ' _', note 2 space before '_' " A
+# ${VISUAL:/ /_/g}
+endsnippet
+
+# a test case for regex in ${VISUAL}
+snippet az "s/[a-z]/_/g visual, trigger with 'az'"
+${VISUAL:/[a-z]/_/g}
+endsnippet
+# snippet t
+# <tag>${VISUAL:inside text/should/is/g}</tag>
+# endsnippet
+# }}} VISUAL transformation

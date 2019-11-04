@@ -1,0 +1,5 @@
+confirm msg without newline
+https://vi.stackexchange.com/questions/9432/confirmmsg-choices-without-newline-on-msg
+
+h echo-redraw
+https://stackoverflow.com/questions/44892186/vimscript-clear-command-line-after-confirm

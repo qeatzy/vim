@@ -1,0 +1,53 @@
+h ruler
+'rulerformat'
+https://stackoverflow.com/questions/30700394/how-to-highlight-rulerformat
+https://vi.stackexchange.com/questions/14518/how-to-display-file-size-in-vim-rulerformat
+https://vi.stackexchange.com/questions/356/how-can-i-set-up-a-ruler-at-a-specific-column
+
+
+let &ruf = '%40(' . &stl . '%)'
+http://vim.1045645.n5.nabble.com/ruler-statusline-td5711690.html
+
+%n  bufnr('%')      3
+%y  [&ft]           [text]
+%=  content after it show at right
+
+  statusline=%{ShowCount(999)}%7*[%n]%1*%-10.30f %2*%< %y %3* %{''.(&fenc!=''?&fenc:&enc).''}%3*
+  %{(&bomb?",BOM":"")} %4* %{(&ff=="unix"?"":&ff)} %8* %=%-10{WinNumberStatus()} %l/%L [%02p%%]
+  %9* %03c %{LineCountCurrentParagraph()}%0* %{IsBuffersModified()}%r%w %P 
+set rulerformat=%l,%c%V%=%P     " default
+set ruf=%100([%n]%-10.30f[%n]%-10.30f[%n]%-10.30f[%n]%-10.30f[%n]%-10.30f[%n]%-10.30f%)
+set ruf+=%15(%y\ %{&fenc}%)
+set ruf=%120([%n]%-10.30f\ \ %y%=%-20(%l/%L\ %P%)%)
+set ls=0
+
+h showcmd
+h laststatus
+set laststatus=0
+set laststatus=1
+set laststatus=2
+h cmdheight
+h cmdwinheight
+
+
+        set noruler
+        set laststatus=0
+        set noshowmode  " to get rid of thing like --INSERT--
+        set noshowcmd  " to get rid of display of last command
+        set shortmess+=F  " to get rid of the file name displayed in the command line bar
+https://unix.stackexchange.com/questions/140898/vim-hide-status-line-in-the-bottom
+https://vi.stackexchange.com/questions/6730/how-to-get-rid-of-the-command-line-bar
+
+for horizontal split, we can hide most bottom statusline,
+but cannot disable statusline completely.
+https://vi.stackexchange.com/questions/14217/how-to-hide-horizontal-line-between-windows
+
+statusline setting discuss
+https://www.reddit.com/r/vim/comments/6fh4n0/need_vim_statusline_inspiration/
+https://www.reddit.com/r/vim/comments/6b7b08/my_custom_statusline/
+https://www.reddit.com/r/vim/comments/gexi6/a_smarter_statusline_code_in_comments/
+
+stl is a global or local to window
+
+
+not possible https://stackoverflow.com/questions/20698197/how-to-merge-vim-commandline-and-statusline

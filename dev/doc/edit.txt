@@ -1,0 +1,6 @@
+very promising
+https://vi.stackexchange.com/questions/13689/how-to-find-and-replace-in-vim-without-having-to-type-the-original-word
+https://stackoverflow.com/questions/505848/interactive-search-replace-regex-in-vim
+
+undo
+https://vi.stackexchange.com/questions/2115/can-i-be-notified-when-im-undoing-changes-from-the-undofile/3151#3151

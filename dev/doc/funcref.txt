@@ -1,0 +1,8 @@
+
+pu=Sub(&rtp,',','\n','g')
+pu=split(&rtp,',')
+pu=getcompletion('*ulti*', 'expression')
+pu=getcompletion('*Ulti*','var')
+pu=getcompletion('*ctrlp*','var')
+
+pu=C('verb nn <space>i')

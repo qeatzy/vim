@@ -1,0 +1,3 @@
+
+visual indication exceed column 80, 'colorcolumn' or match()
+https://vi.stackexchange.com/questions/356/how-can-i-set-up-a-ruler-at-a-specific-column

@@ -1,0 +1,23 @@
+
+bufadd('') will always create new no name buffer.
+0file to remove name of current buffer
+file {name} to set current file name to {name}
+you may need to set option after switch to it, otherwise it maybe overridden.
+..
+<C-^> or :e # will reset 'buflisted' to 1. :b # w'ont.
+https://github.com/vim/vim/issues/715
+instead of nn gt <C-^>. use :b instead. Buf_go_buffer()
+
+argadd | tabe | next
+open multiple file at once, in different tabs.
+https://stackoverflow.com/questions/3468763/how-do-i-make-vim-open-all-files-matching-a-pattern-in-different-tabs
+
+vim +/regex/ file.txt
+open file at first match
+h starting.txt
+https://stackoverflow.com/questions/39232615/open-vim-file-with-cursor-on-first-search-pattern-match-similar-to-line-no-wit
+
+bufnr({expr} [, {create}])
+		If the buffer doesn't exist, -1 is returned.  Or, if the
+		{create} argument is present and not zero, a new, unlisted,
+		buffer is created and its number is returned.

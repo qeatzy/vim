@@ -1,0 +1,100 @@
+
+h :!
+h r!
+h system()
+		Pipes are not used, the 'shelltemp' option is not used.
+	'shell' 'shellcmdflag' 'shellxquote' {expr} 'shellredir' {tmp} 'shellxquote'
+set shell? shellcmdflag? shellxquote? shellredir? shellquote? shellpipe?
+
+| can not chain some command, eg, !command.
+https://stackoverflow.com/questions/14268232/vim-map-command-with-confirmation-to-key
+
+python
+https://www.reddit.com/r/vim/comments/7wx2hn/how_to_run_python_code_in_vim/
+https://stackoverflow.com/questions/18948491/running-python-code-in-vim
+
+three kind of runing a process
+1 blocking, eg, !some-command
+2 interactive, eg, switch to another tmux window, or use vim :terminal feature.
+    2.1 open a interactive shell some where, pipe the input output.
+        -- easily break, but fit my need best.
+    might use fifo, to allow bi-directional read/write.
+      the workflow `save to trigger run, then repeat.`       https://github.com/1995eaton/vim-fifo
+    is this true, reading part is waiting, but writing part can only write once,
+    that is, you cannot continuously write to it then close it at last?
+        no really, reason for the above is `:w >path/to/fifo` has EOF in the end.
+        you can pipe to an dedicated intermidiate process, let it write to fifo 
+        until told not.
+            -- possible,
+            1 cat fifo first
+            2 then python f = open('fifo','w')
+              in vim, this can be done via +python3.
+                tested. works perfectly. (only on cat, sadly.)
+                if reading part is python. it's always buffered. even `export PYTHONUNBUFFERED=1`
+                or python -u - <fifo
+                    https://stackoverflow.com/questions/14258500/python-significance-of-u-option
+                    https://unix.stackexchange.com/questions/25372/turn-off-buffering-in-pipe
+                            The root cause is that libc switches to 4k buffering if the stdout is not a tty. - Aaron Digulla Jun 16 '09 at 11:50
+                        for pipe a workaround is use pty, since in one pty, seems
+                        no luck with fifo.
+                   (not) this one works, inspired by https://unix.stackexchange.com/a/123072/202329
+                    reader  cat xx 1>&2 |&python -  # utilize the fact stderr is always unbuffered.
+                    write any. (in another tmux window, python or vim's +python)
+                        (reason why work) The problem is that libc will line-buffer when stdout to screen, and full-buffer when stdout to a file. But no-buffer for stderr.
+                        with `export PYTHONUNBUFFERED=1`
+                        cat /tmp/fifo 1>&2 |& sed -e 's/^./x/' # works both ouput line
+                        cat /tmp/fifo 1>&2 |& python -u -          # not works, python not output.
+                        cat /tmp/fifo 1>&2 |& python -u -i -          # works, both output.
+                        cat /tmp/fifo 1>&2 |& python -u -i - 2>~/zzzz 1>&2  # works, ~/zzzz updated line by line
+                         3 parts needed
+                         1 cat redirect stderr (instead of stdout) to python
+                         2 'python -i -' to treat stdin as source code
+                         3 python redirect stderr (instead of stdout) to file
+                           even in this senario, python's stdin is still buffered (unlike sed).
+                            thus I think the cat part is unnecessary? No, it's defenitely necessary. (tested)
+                             python -i /tmp/fifo 2>~/zzzz 1>&2  # this not work, python try read whole file first
+                             what about redirect stdin to /tmp/fifo
+                              python -i - < /tmp/fifo 2>~/zzzz 1>&2  # this works, same as above cat version
+                            In summary 3 needed,
+                            1 fifo to link together via blocking
+                            2 `python -i -`  i.e., python interactively read stdin and run line by line.
+                                the stdin could from pipe or redirect.
+                            3 redirect stderr (instead of stdout) to avoid libc buffering.
+                                note this solution is quite general, 1 & 3 are provided by OS & shell.
+                            if the intermediate command support run stdin as code line by line, then it works.
+                            you can sit in vim, and let +python to pipe the lines to the command and
+                            view the redirected file in another vim buffer.
+                                for those that does not suppor read stdin (piped or redirected)
+                            you may has to stick with tmux send-keys, sqlite3 actually works quite good this way.
+                          command-to-run  2> file.txt 1>&2   # note the order,
+                          1>&2 at last, after 2>file.txt, whereas for pipe 1>&2
+                          precede |&.
+                             comment here explain redirect well  https://unix.stackexchange.com/a/123072/202329
+                             1>&2 |&  mean 1>&2 2>&1  turn to fd1 point to fd2; fd2 point to fd1;
+                             2>xx 1>&2 mean 2>xx 1>&2 turn to fd2 write to xx; fd1 point to fd2;
+                                write fd2 (stderr) is alwalys unbuffered.
+                         why python -u not work, https://stackoverflow.com/questions/7973870/why-does-python-keep-buffering-stdout-even-when-flushing-and-using-u
+                            https://stackoverflow.com/questions/14258500/python-significance-of-u-option
+                    other solution is to use utils to re-connect to pty, eg, `unbuffer`.  or `stdbuf`.
+                    stdbuf is part of gnu coreutils
+                    -- test stdbuf
+                        tested, not work. read & write in different pty(tmux pane). maybe that's the reason?
+                seems windows has no fifo. 
+                    Windows and Linux named pipes are different animals.
+                    https://stackoverflow.com/questions/3960221/windows-named-pipe-support-in-Linux
+    man 3 fifo
+    man 7 fifo
+3 async, asyncrun.vim do not do double interactive communication, 
+    but the dispatch part is quite good.
+
+
+https://github.com/skywind3000/asyncrun.vim
+There can be some options before your [cmd]:
+-mode=0/1/2 - start mode: 0(async, default), 1(:make), 2(:!)
+-cwd=?      - initial directory, (use current directory if unset)
+-save=0/1/2 - non-zero to save current(1) or all(2) modified buffer(s) before executing.
+-program=?  - set to `make` to use `&makeprg`, `grep` to use `&grepprg` 
+-post=?     - vimscript to exec after this job finished, spaces **must** be escaped to '\ '
+-auto=?     - event name to trigger "QuickFixCmdPre/QuickFixCmdPost [name]" autocmd
+-raw=1      - use raw output (output will not match with the errorformat) 
+-strip      - remove the heading / tailing messages (command and [Finished in ...]).

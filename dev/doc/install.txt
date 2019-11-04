@@ -1,0 +1,5 @@
+mkdir -p ~/.vim/{.vimswap,.vimundo,after,autoload,bundle}
+copy entry.vim and bundle.vim in ~/.vim/autoload
+put below line in ~/.vimrc
+    call entry#init()
+done.

@@ -1,0 +1,1 @@
+if you test if executable('external-command'), then it will tend be slow.

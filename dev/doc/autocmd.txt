@@ -1,0 +1,3 @@
+pu=Comp('autocmd','help')
+pu=map(Comp('*','event'), {i,v -> 'h ' . v})
+

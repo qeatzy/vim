@@ -1,0 +1,14 @@
+
+'shellslash'
+tempname()					*tempname()* *temp-file-name*
+<		For Unix, the file will be in a private directory |tempfile|.
+		For MS-Windows forward slashes are used when the 'shellslash'
+		option is set or when 'shellcmdflag' starts with '-'.
+
+writefile({object}, {fname} [, {flags}])
+		When {flags} contains "s" then fsync() is called after writing
+		the file.  This flushes the file to disk, if possible.  This
+		takes more time but avoids losing the file if the system
+		crashes.
+		An existing file is overwritten, if possible.
+		When the write fails -1 is returned, otherwise 0.

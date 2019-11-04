@@ -1,0 +1,107 @@
+# ~/.vim/bundle/vim-snippets/snippets/vim.snippets
+
+# snippet ife "" b
+# if ${1:}
+# else
+# endif
+# endsnippet
+
+snippet fuh "" b
+func! run#${1}(${2:}) abort
+endfunc " run#$1
+endsnippet
+
+# snippet fuh "" b
+# func! path#${1:name}(${2:}) abort
+# endfunc " path#$1
+# endsnippet
+
+snippet aug "" b
+augroup ${1}
+	autocmd!
+augroup END " $1
+endsnippet
+
+snippet au "" b
+autocmd
+endsnippet
+
+snippet fu "" b
+func ${1}
+endfunc
+endsnippet
+
+snippet whi "" b
+while ${1}
+endwhile
+endsnippet
+
+snippet for "" b
+for ${1}
+endfor
+endsnippet
+
+# snippet if "if statement"
+# if ${1}
+# 	${0:${VISUAL}}
+# endif
+# endsnippet
+#
+# snippet ff "if statement"
+# if ${1}
+# 	${0:${VISUAL}}
+# endif
+# endsnippet
+#
+# snippet fu "" b
+# func! ${1:Name}(${2:})
+# 	${3:body}
+# endfunc " $1
+# endsnippet
+#
+# snippet fua "" b
+# func! ${1:Name}(${2:}) abort
+# 	${3:body}
+# endfunc " $1
+# endsnippet
+#
+# snippet ifbh "bundle#has" b
+# if bundle#has('${1:name}')
+# endif " $1
+# endsnippet
+#
+# # snippet fuh "" b
+# # func! g:dirs.${1:name}(${2:}) dict
+# # endfunc " $1
+# # endsnippet
+#
+# # snippet fuh "" b
+# # func! bundle#${1:name}(${2:}) abort
+# # endfunc " bundle#$1
+# # endsnippet
+# # # let g:dirs.$1 = s:$1
+#
+# # snippet fuh "" b
+# # func! s:${1:name}(${2:}) abort
+# # endfunc " s:$1
+# # endsnippet
+# # # let g:dirs.$1 = s:$1
+#
+#
+# # snippet fuh "" b
+# # func! dirbufdebug#${1:name}(${2:}) abort
+# # endfunc " dirbufdebug#dl_$1
+# # endsnippet
+#
+# # snippet fuh "" b
+# # func! dirbufcore#${1:name}(${2:}) abort
+# # endfunc " dirbufcore#dl_$1
+# # endsnippet
+#
+# snippet aug "" b
+# augroup ${1:name}
+# autocmd!
+# autocmd ${2:cond}
+# augroup END " $1
+# endsnippet
+#

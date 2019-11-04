@@ -1,0 +1,83 @@
+
+echo mapleader      |" unset by default, will use \ then.
+    you don't have to use leader, since you can map any sequences directly.
+:nmap foo :echo('your leader is "<Leader>"')<Esc>| exec 'norm foo'| nun foo
+nn foo
+https://stackoverflow.com/questions/10389205/show-current-leader-key-setting
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+i  <Tab>       * pumvisible() ? "\<C-N>" : "\<Tab>"
+h pumvisible
+        Last set from ~/.vim/bundle/YouCompleteMe/autoload/youcompleteme.vim line 291
+
+You can use the cmdalias.vim - Create aliases for Vim commands plugin to override the :suspend command with an empty one (e.g. :echo), but because the overriding is done via command-line mappings, it will only work when typing the command interactively.
+https://vi.stackexchange.com/questions/2423/prevent-vim-from-running-a-built-in-function
+
+h using-<Plug>
+very informative http://vim.1045645.n5.nabble.com/Use-and-meaning-of-lt-plug-gt-td4626975.html
+In essense, noremap will always work, map can break. similar to pass by value & pass
+by pointer. <Plug> is solely used with map, meaningless to noremap to <Plug>,
+since <Plug>SomeName is a pointer to some {rhs} of mapping, this {rhs} of mapping
+is usually of noremap form, often point to call <SID>some_script_func().
+To recap, <Plug> is interface exposed to end user, decompling mapping from implementation.
+without <Plug>
+implementor
+    define some_global_func
+user
+    nn key :call some_global_func()<CR>
+if you change one, the other need to be changed.
+with <Plug>
+implementor
+    define which_name_you_want_func
+    noremap <Plug>MeaningfulName :call which_name_you_want_func()
+user
+    nmap key <Plug>MeaningfulName
+the implementor usually sits at autoload directory, where user sits at plugin
+directory or .vimrc. (note: definition of <Plug> must be in plugin/, not autoload/)
+Of course, you can live with <Plug>, just wrap local function with autoloaded#funcname().
