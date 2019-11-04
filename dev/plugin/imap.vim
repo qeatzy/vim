@@ -19,6 +19,8 @@ ino jj <Esc>
 ino <C-e> <End>
 ino <C-f> <Right>
 ino <C-b> <Left>
+ino b <S-Left>|" Alt-b
+ino f <S-Right>|" Alt-f
 
 ino <C-r><C-r> <C-r>=
 ino <C-r>r <C-r>=

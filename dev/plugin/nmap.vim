@@ -10,3 +10,7 @@ nmap yg <Plug>yank_filename
 
 nnoremap qr :<C-u>call run#runbash(line('.'),v:count1)<CR>
 nnoremap gr :<C-u>call run#capturebash(line('.'),v:count1)<CR>
+
+nn zh zt
+nn <Space>d :t.<CR>
+nn qo <C-W><C-O>

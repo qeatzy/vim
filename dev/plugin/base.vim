@@ -44,7 +44,7 @@ cnoremap <expr> <F1> (getcmdtype() =~# '[/\?]')? OptToggle('hlsearch') : '<F1>'
 
 set encoding=utf-8
 set fileencodings=ucs-bom,utf-8,gb2312,gb18030,gbk,cp936,big5,euc-jp,euc-kr,latin1
-set fileencoding=utf-8
+"set fileencoding=utf-8|" not needed, local to buffer, cause buffer "[No Name]" changed
 
 vnoremap <F2> :<c-u>exec join(getline("'<","'>"),"\n")<CR>
 nnoremap <silent> <F2> :<C-u> exec v:count1 == 1 ? getline('.') : join(getline('.',line('.')+(v:count1-1)), "\n") <CR>

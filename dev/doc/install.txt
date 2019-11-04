@@ -3,3 +3,5 @@ copy entry.vim and bundle.vim in ~/.vim/autoload
 put below line in ~/.vimrc
     call entry#init()
 done.
+git clone https://github.com/qeatzy/vim ~/.vim/vim
+ln -s $PWD ~/.vim/vim

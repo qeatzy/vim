@@ -45,13 +45,14 @@ endfunc
 
 func! dirbuf#openpath(path, ...) abort
     let type = get(a:, 1, 'dir')
+    let force = get(a:, 2, 0)
     let abspath = path#abspath(a:path)
     let b = get(g:dh_dirs, abspath)
     if type(b) == v:t_number
         let b = s:addpath(abspath)
     endif
     let d = path#upget(b.realpath)
-    if b.viewtime < d.mtime || b.viewttype != type
+    if force || b.viewtime < d.mtime || b.viewttype != type
         if type == 'tree'
             if !has_key(d, 'tree_cache')
                 echom "tree_cache not build yet, try again later"
@@ -127,5 +128,6 @@ endfunc " dirbuf#dh_enter
 func dirbuf#setup() abort
     nn <buffer><silent> i :<C-u>call dirbuf#dh_enter()<CR>
     nn <buffer> t :<C-u>call dirbuf#openpath(expand('%'), 'tree')<CR>
+    nn <buffer> R :<C-u>call dirbuf#openpath(expand('%'), 'dir', 1)<CR>
     nn <buffer> r :<C-u>call KeyPrefix_r()<CR>
 endfunc

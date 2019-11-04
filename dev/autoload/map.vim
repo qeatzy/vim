@@ -1,14 +1,3 @@
-nn Y y$
-set timeout|"-- default on
-set timeoutlen=200
-set ttimeout|"-- default off
-set ttimeoutlen=100
-ino <space>s :up<CR>
-nn  <Space>m    :bm<CR>
-nn  <Space>;    :bm<CR>
-   nn  gt          <C-^>
-nn  <Esc>s      :up<CR>
-nn  q           :q<CR>
 
     " pu=Capture('nn q')
 

@@ -2,3 +2,14 @@ cd ~/.vim/bundle && git clone https://github.com/Yggdroot/LeaderF
 
 filter, use popup
 https://github.com/liuchengxu/vim-clap
+
+do not use tcomment_vim
+1 fails, 
+TComment: Comment mode is not supported for the current filetype: ''
+2 last updated at 2017
+https://www.vim.org/scripts/script.php?script_id=1173
+https://github.com/tomtom/tcomment_vim
+https://github.com/vim-scripts/tComment
+
+
+https://github.com/tpope/vim-commentary

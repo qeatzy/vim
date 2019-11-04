@@ -52,7 +52,7 @@ let s:ibundle = []
 for spec in split(g:ibundle, '\s*,\s*')
     if spec =~# ':'
         let [name, times] = split(spec, ':')
-        let times = (times =~# '/') ? split(times, '/') : [times, times]
+        let times = map(((times =~# '/') ? split(times, '/') : [times, times]), 'str2float(v:val)')
     else
         let name = spec
         let times = [-1, -1]
@@ -119,8 +119,8 @@ func! s:loader(path) abort
     " let l:Callback = {path -> execute([printf('set rtp+=%s', path),
     "     \ printf('source %s/plugin/**/*.vim', path)])}
     let l:Callback = {timer -> execute([printf('set rtp+=%s', a:path),
-                \ printf('echom "fire: path = %s"', a:path),
-        \ printf('source %s/plugin/**/*.vim', a:path)])}
+                \ printf('echom "fire: path = %s"', a:path)] + 
+        \ map(glob(a:path . '/plugin/**/*.vim',0,1), '"source " . v:val'))}
     return l:Callback
     " printf('set rtp+=%s', a:path),
     " printf('source %s/plugin/**/*.vim', a:path)

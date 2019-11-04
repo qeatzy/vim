@@ -1,1 +1,12 @@
+# below startup time is measured on cygwin, which is slower than on linux.
 if you test if executable('external-command'), then it will tend be slow.
+
+concat dev/*.vim to single.vim
+time from 130ms - 118ms
+cat dev/plugin/*.vim > tmp/plugin/zz.vim
+
+load dev takes 40-50ms, event after concat to single file.
+lazy load dev
+
+move statusline setting to entry.vim, to minimize visual effect.
+75ms, after all optimization, 2019-11-04.
