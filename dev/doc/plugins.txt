@@ -1,4 +1,16 @@
 cd ~/.vim/bundle && git clone https://github.com/Yggdroot/LeaderF
+cd ~/.vim/bundle && git clone https://github.com/SirVer/ultisnips
+https://github.com/terryma/vim-multiple-cursors
+patch-8.1.2114  https://github.com/liuchengxu/vim-clap
+cd ~/.vim/bundle && git clone https://github.com/atom/fuzzy-finder
+
+
+syntax-colors
+https://www.vim.org/scripts/script.php?script_id=1238
+https://www.vim.org/scripts/script.php?script_id=2666
+
+"motion
+https://github.com/goldfeld/vim-seek
 
 filter, use popup
 https://github.com/liuchengxu/vim-clap

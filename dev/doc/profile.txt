@@ -10,3 +10,9 @@ lazy load dev
 
 move statusline setting to entry.vim, to minimize visual effect.
 75ms, after all optimization, 2019-11-04.
+
+
+ vp -u NONE
+ vp -u NORC
+ vp --cmd 'let ibundle=1'
+ vp

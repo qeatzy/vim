@@ -3,3 +3,6 @@ https://vi.stackexchange.com/questions/9432/confirmmsg-choices-without-newline-o
 
 h echo-redraw
 https://stackoverflow.com/questions/44892186/vimscript-clear-command-line-after-confirm
+
+The FuzzyFinder - buffer/file/command/tag/etc explorer plugin uses this, and even provides an API for custom uses, cp. :help fuf-callbackitem-mode. That's certainly worth a look, though the menu would still be located at the top, not inside the current buffer.
+https://stackoverflow.com/questions/22442403/vim-popup-menu-like-the-omni-autocomplete-popup

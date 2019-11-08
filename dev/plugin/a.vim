@@ -1,14 +1,15 @@
-
 set timeout|"-- default on
 set timeoutlen=200
 set ttimeout|"-- default off
 set ttimeoutlen=100
+set nostartofline|" duplicate line remain same column
 
         " set ruler
         " set laststatus=0
         " set noshowmode  " to get rid of thing like --INSERT--
         " set noshowcmd  " to get rid of display of last command
         " set shortmess+=F  " to get rid of the file name displayed in the command line bar
+        set shortmess+=c    " Back at original" during autocompletion  https://github.com/Shougo/neocomplete.vim/issues/186
         set showcmd
 
 func! CmdAlias(lhs, rhs)

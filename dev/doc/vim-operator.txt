@@ -1,0 +1,6 @@
+https://vi.stackexchange.com/questions/17911/operator-pending-mode-remaps-not-working
+Well, gg is a full command by itself, so operator mode is not involved here at all.
+
+
+https://vi.stackexchange.com/questions/16565/reclaim-cursor-shape-in-operator-pending-mode-of-neovim-while-using-vim-surround
+If vim-surround were implemented as 's' and 'S' (pseudo-)text-objects instead of operators ds, dS, cs, cS etc, this wouldn't be an issue. I don't know if there's some technical reason for this design choice, but anyway one solution would be to write your own wrapper omap:

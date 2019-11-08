@@ -1,3 +1,4 @@
 True=1
 False=1
-pygame.QUIT=1
+assert=f
+print=f

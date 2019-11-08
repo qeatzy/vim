@@ -4,4 +4,5 @@ put below line in ~/.vimrc
     call entry#init()
 done.
 git clone https://github.com/qeatzy/vim ~/.vim/vim
+cp ~/.vim/vim/dev/autoload/{bundle.vim,entry.vim} ~/.vim/autoload
 ln -s $PWD ~/.vim/vim

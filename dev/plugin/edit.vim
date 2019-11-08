@@ -19,8 +19,8 @@ ino jj <Esc>
 ino <C-e> <End>
 ino <C-f> <Right>
 ino <C-b> <Left>
-ino b <S-Left>|" Alt-b
-ino f <S-Right>|" Alt-f
+noremap! b <S-Left>|" <Alt-b> move word back        -- both insert and cmdline mode
+noremap! f <S-Right>|" <Alt-f> move word forward
 
 ino <C-r><C-r> <C-r>=
 ino <C-r>r <C-r>=
@@ -28,3 +28,19 @@ ino <expr> <C-r> imap#getchar()
 iunmap <C-r>
 ino <expr> <C-r> imap#ctrl_r()
 
+nn oo o<CR>
+
+"line
+nn dp "_d$|" diffput is original
+nn cp "_c$
+" nn <Space>d :t.<CR>
+nn <Space>d :<C-u>call edit#duplicate_current_line(v:count1)<CR>
+" ino <S-CR> <C-o>o|" <S-Enter> to add a new line, like in pycharm
+ino  <C-o>o|" on cygwin, <C-Enter> works, <S-Enter> not work
+
+"cms
+nn g[ :Commentary<CR>|" accept count
+
+
+"repeat
+nn . :<C-u>call edit#repeat(v:count1)<CR>|" fix repeat of cgn, and https://github.com/hauleth/sad.vim

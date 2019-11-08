@@ -1,5 +1,8 @@
 E993	popup.txt	/*E993*
 E997	popup.txt	/*E997*
+in_io-buffer	job-channel.txt	/*in_io-buffer*
+job-options	job-channel.txt	/*job-options*
+job-start-nochannel	job-channel.txt	/*job-start-nochannel*
 popup	popup.txt	/*popup*
 popup-buffer	popup.txt	/*popup-buffer*
 popup-callback	popup.txt	/*popup-callback*

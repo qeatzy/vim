@@ -103,3 +103,30 @@ func! run#GetInputCommandThenCaptureAndPut()
     endif
 endfunc
 
+func! run#r(...) abort
+    let c = getchar()
+    " echo c type(c)
+    let ch = nr2char(c)
+    if ch ==# 'r'
+        exec 'norm! r' . nr2char(getchar())
+        return
+    endif
+    if ch ==# 'c'
+        let nr = buf#nextscratch()
+        " let job = job_start(getline('.'), {'out_io':'buffer','out_buf':nr})
+        let job = job_start(getline('.'), {'out_io':'buffer','out_buf':nr})
+        exec 'nn gh :<C-u>b ' . nr . '<CR>'
+        call io#notify('')
+    elseif ch ==# 'p'
+        pu +    " no cygwin, + `:reg +` show reg *, `:pu +` use reg *
+    elseif ch ==# 's'
+       set opfunc=edit#gn_motion_old
+       " set opfunc=sad#search_and_replace_forward
+       " exec 'norm! "' . v:register . 'g@'
+       call feedkeys('"' . v:register . 'g@', 'n')
+    elseif ch ==# '*'   " motion, /\<word\>/e<CR>
+        call feedkeys('/\<' . expand('<cword>') . '\>/e' . "\<CR>", 'n')
+    else
+        call feedkeys('r' . ch, 'n')
+    endif
+endfunc " run#r

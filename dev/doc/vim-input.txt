@@ -1,0 +1,7 @@
+norm! vs feedkeys()
+https://stackoverflow.com/questions/9445273/how-do-i-emulate-a-keypress-inside-a-vim-function
+https://stackoverflow.com/questions/53537641/passing-input-to-a-fzf-shortcut-in-vimrc
+
+use input() inside of mapping
+https://stackoverflow.com/questions/14388703/vim-mapping-with-user-input
+https://vi.stackexchange.com/questions/6029/how-to-wait-for-user-input-in-the-middle-of-a-mapping/6030#6030

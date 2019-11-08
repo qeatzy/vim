@@ -1,0 +1,7 @@
+h gm|"  goto middle of screen. -- not half of line.
+nn <C-z>
+
+*   search \<word\>
+g*  search \<word\>
+r*  search \<word\>/e   -- my own mapping
+

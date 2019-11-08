@@ -1,0 +1,15 @@
+use s as "_c. possible toggle change mode & motion mode (like vim-sneak).
+from https://www.hillelwayne.com/post/intermediate-vim/
+At least one Vim trick you might not know • Hillel Wayne 2019-05-31
+nnoremap s "_d
+    Makes s (along with corresponding maps for ss and S) act like d, except it doesn’t save the cut text to a register. Helps when I want to delete something without clobbering my unnamed register.
+
+
+
+stl statusline
+disable statusline in terminal buffer,
+sol 1, toggle laststatus
+sol 2, wrap statusline with b:somevar
+-- laststatus is global
+h laststatus
+h statusline

@@ -1,9 +1,10 @@
-func! NextWindowOrTab(...) abort
-"n  <C-L>       * :if winnr('$') == 1|tabn|else|winc l|endif<CR>
-endfunc
+" motion & view
+" motion 1 screen change, cursor not 2 cursor change, screen (may) not
+nnoremap ;v :call motion#TogViewMode()<CR>
 
-nn <C-l> :<C-u>call NextWindowOrTab(v:count1)<CR>
+"screen
+nn zh zt
 
-func! TestRange() range
-    echo a:firstline a:lastline
-endfunc
+"cursor
+nnoremap <BS> k$
+nnoremap <C-h> k$

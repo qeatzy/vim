@@ -1,0 +1,13 @@
+
+h gn|" cgn
+https://engagor.github.io/blog/2018/02/21/why-vim-doesnt-need-multiple-cursors/
+
+h i^o
+after `nn dp "_d$`, `<C-o>dp` in insert mode to discard remain chars in current line.
+after `nn s my-alternative-sneak-easymotion`, `<C-o>s + key + key` to go any where in screen.
+
+insert as operator
+https://vi.stackexchange.com/questions/21593/making-operator-insert-and-append-repeatable
+
+delete in current line
+go one end (usually right end), mm to mark, go another end, d`m to delete. (m for modify)

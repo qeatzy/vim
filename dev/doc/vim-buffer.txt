@@ -1,0 +1,2 @@
+echo bufadd('xx')
+you cannot have two buffer that has same name.

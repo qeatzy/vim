@@ -1,0 +1,21 @@
+
+autocmd BufWritePost dev/autoload/buf.vim source %
+autocmd BufWritePost dev/autoload/run.vim source %
+autocmd BufWritePost dev/autoload/edit.vim source %
+autocmd BufWritePost dev/autoload/buf.vim echo localtime()
+autocmd BufWritePost dev/autoload/buf.vim
+autocmd! BufWritePost dev/autoload/buf.vim
+autocmd BufWritePost
+
+autocmd BufWritePost dev/autoload/surround.vim source %
+fu surround#d
+    search
+        let pos = searchpos('(', 'bcnW')|echo pos
+        let pos = searchpos(')', 'cnW')|echo pos
+        f(a,b)
+        echo getcurpos()
+        echo getpos("        ')")
+        matchstr(getline('.'), '\%' . col('.') . 'c.')
+        echo setpos("']", [0,14,24,0])
+
+

@@ -1,0 +1,18 @@
+
+# make trigger, to accept arguments, 10 seconds to wait, which event to listen
+snippet loop "" b
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False${0}
+    pygame.time.wait(10)
+endsnippet
+
+snippet sci "screen init" b
+screen = pygame.display.set_mode(size)
+endsnippet
+
+snippet up "update screen" b
+pygame.display.update(${1:})
+endsnippet

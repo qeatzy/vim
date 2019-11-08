@@ -1,0 +1,11 @@
+hi Pmenu
+hi Comment
+    let winid = popup_create(31,{'maxheight':23,'wrap':0,'highlight':'Comment'})
+    let winid = popup_create(31,{'maxheight':23,'wrap':0,'highlight':'PmenuSel'})
+    let winid = popup_create(31,{'maxheight':23,'wrap':0,'highlight':'Pmenu'})
+    let winid = popup_create(31,{'maxheight':23,'wrap':0,'highlight':'Normal'})
+    let winid = popup_create(31,{'maxheight':23,'wrap':0,'highlight':'ModeMsg'})
+    let winid = popup_create(31,{'maxheight':23,'wrap':0,'highlight':'Conceal'})
+    let winid = popup_create(31,{'maxheight':23,'wrap':0,'highlight':'PmenuThumb'})
+    pu=C('hi')
+

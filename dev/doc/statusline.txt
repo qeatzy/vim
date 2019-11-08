@@ -38,6 +38,11 @@ h cmdwinheight
 https://unix.stackexchange.com/questions/140898/vim-hide-status-line-in-the-bottom
 https://vi.stackexchange.com/questions/6730/how-to-get-rid-of-the-command-line-bar
 
+h shortmess
+h cpo
+noshow
+set shortmess=filmnrwxaoOstTWAIcqFS
+
 for horizontal split, we can hide most bottom statusline,
 but cannot disable statusline completely.
 https://vi.stackexchange.com/questions/14217/how-to-hide-horizontal-line-between-windows

@@ -1,0 +1,5 @@
+https://www.linux.com/news/vim-tips-moving-around-using-marks-and-jumps/
+set viminfo='100,f1
+If you have viminfo set, it will save local marks (a-z) by default. The ‘100 tells Vim to save marks and other information for up to 100 files. The f1 directive tells Vim to also save global marks (A-Z) when it exits. If you don’t want Vim to do this, set it to f0 instead.
+
+https://vim.fandom.com/wiki/Using_marks

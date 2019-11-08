@@ -1,0 +1,2 @@
+I couldn't find any way to do this in a regular Vim. However, if you are willing to patch Vim, the following may work for you.
+https://vi.stackexchange.com/questions/742/showing-command-history-with-showcmd

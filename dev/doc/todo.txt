@@ -1,0 +1,164 @@
+h autocmd-patterns
+how to match terminal buffer only? eg, start with !. not work.
+!
+!*
+\!*
+[!]*
+all not work
+see ../plugin/buffer.vim
+
+multi-cursor editing
+ motivation: ultisnips do not update after modify vim.snippets.
+find you own way to do multi-cursor editing.
+
+test vim-clap (use popup) on $h1.
+
+extend vim-sneak, help mode, go only vim help tag.
+
+create doc or code file, to change highlight group color.
+
+create multiple terminal
+eg, when one is doing git clone.
+..
+how to detect if a terminal bash is idle or not?
+-- compare last line against $PS1.
+..
+send current line to an idle terminal buffer.
+pwd
+call term_sendkeys(1, getline('.'))
+
+h term_sendkeys
+
+h Virtual-Replace-mode
+h r|" `10r<C-E>` copies 10 characters from the line below.
+
+some key, go getchar loop, then. (forgot)
+
+how leaderf customize its statusline. (statusline can be local to global)
+|| press Tab goto normal mode
+
+auto change dir of terminal window.
+via a hook/wrapper of shell, to tell vim, change directory of 
+corresponding terminal buffer.
+https://unix.stackexchange.com/a/531118
+https://www.google.com/search?ei=vYrBXYKpHK29ggfmno6IDA&q=bash+hook+of+cd+change+directory
+https://unix.stackexchange.com/questions/171764/how-can-i-run-a-command-in-bash-after-any-change-in-pwd
+
+https://vi.stackexchange.com/questions/21798/how-to-change-local-directory-of-terminal-buffer-whenever-its-shell-change-direc
+
+what does is# do, used in getchar context.
+
+
+
+How come you don't need to use the g flag? – Hovercouch Dec 23 '15 at 19:32
+Because of :help 'gdefault'. – romainl Dec 23 '15 at 22:30
+https://vi.stackexchange.com/questions/5929/repeat-replace-one-character-r-for-next-occurence
+
+tab as key prefix
+https://github.com/skywind3000/vim
+
+r as key prefix, goto key loop,
+rr exec 'norm! r' and return
+
+
+view mode, j/k page down/up.
+(use old impl)
+at interface
+    nmap j <plug>some_util  " eg, pagedown
+at impl
+    nn <plug>some_util true action
+
+
+a-z marks are stored per buffer. A-Z0-9 are are global marks, AFAIK you can't store built-in marks per-tab.
+https://vi.stackexchange.com/questions/19721/marks-between-windows
+
+
+use m + 1..9 as customized motion, eg, go 1st scratch buffer.
+https://vi.stackexchange.com/questions/8716/what-does-1-do
+
+use g + 1..8 as customized buffer switcher.
+
+use \ + letter, \ + letter + letter.
+  word under the cursor with \0 - \9 mappings. (And clear with \c0 etc.) 
+https://www.vim.org/scripts/script.php?script_id=2666
+
+
+how to showcmd manually, in you customize mapping/function?
+
+nnoremap <key> :<C-u>marks<CR>:normal! `
+nnoremap <key> :ls<CR>:b<Space>
+nnoremap <key> :undolist<CR>:u<Space>
+https://vi.stackexchange.com/questions/8451/is-it-possible-to-have-vim-show-the-list-of-available-marks-when-using-marks
+..
+ranger mark feature.
+https://www.youtube.com/watch?v=qooLR8NmYKs&feature=youtu.be&t=10m25s
+
+
+autocmd BufWritePost .vimrc source %
+And yes If you are experimenting with your vimrc and tired of sourcing it after every change, add this line.
+https://vi.stackexchange.com/questions/6307/vim-doesnt-show-the-command-that-is-being-typed
+
+<space> as leader key
+
+I think he wants "0p feature with only p, which is absurd. I think /u/shiyanhui doesn't yet know about "0p, that's why a unreasonable stupid mapping xnoremap p pgvy.
+https://www.reddit.com/r/vim/comments/92bbzc/a_simple_and_small_vimrc/
+
+echo repeat(' ',100) '\c'
+
+<M-x> then  <C-r> :, to capture last cmdline command.
+
+
+nn  gm :<C-U>call term#switch_to_term_buffer()<CR>
+nn  gj :<C-U>call term#switch_to_term_buffer()<CR>
+-- or use gj?
+
+write you own commentor, and make it vim-repeat friendly.
+|| tcomment fails, not supported for current filetype, -- in python file
+    vim-commentary do not comment empty lines.
+    what about nerd commenter.
+    && why not write you own, its not hard.
+        g[ remap for tcomment do not respect vim-repeat.
+        gc loose timeout, or need wrapper for g.
+
+; + somekey to `:pu +`
+
+combine vim-sneak and marks.
+
+<space>o to fuzzy opened directory. <space>i buffer.
+
+2 <space>dj to duplicate (current + next line) 2 times
+or
+2 <space>d to duplicate current line 2 times
+or accept motion only if v:count != 0
+
+answer this question to earn points.
+https://stackoverflow.com/questions/1737163/traversing-text-in-insert-mode
+noremap! b <S-Left>|" <Alt-b> move word back        -- both insert and cmdline mode
+noremap! f <S-Right>|" <Alt-f> move word forward
+after `nn dp "_d$`, `<C-o>dp` in insert mode to discard remain chars in current line.
+after `nn s my-alternative-sneak-easymotion`, `<C-o>s + key + key` to go any where in screen.
+
+Your problem with Vim is that you don't grok vi.
+https://stackoverflow.com/questions/1218390/what-is-your-most-productive-shortcut-with-vim
+
+
+
+
+As this thread on Super User suggests, it is unfortunately not possible in vanilla Vim (the easy way).
+You can use the repmo.vim plugin if you want to use . like this.
+Otherwise, I'd use macros and @@ to repeat the last macro used.
+https://stackoverflow.com/questions/43217196/in-vim-using-dot-command-as-an-operator
+
+re-source dev/autoload/*.vim dev/plugin/*.vim automatically,
+by inspect its mtime and last source time (default to startup time).
+|| impl by a autosource.vim
+
+<space>j fuzzy search opened directory, in MRU order.
+add a hook in dirbuf#opendirectory() to maintain a MRU stack.
+the hook is string, name of a funcref.
+does ctrlp or leaderf accept custome provider
+
+<space>m go last modified buffer in MRU order.
+
+dev/doc/vim-operator.txt
+dev/doc/vim-edit.txt

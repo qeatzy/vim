@@ -7,8 +7,8 @@
 # endsnippet
 
 snippet fuh "" b
-func! run#${1}(${2:}) abort
-endfunc " run#$1
+func! io#${1}(${2:}) abort
+endfunc " io#$1
 endsnippet
 
 # snippet fuh "" b
@@ -27,8 +27,8 @@ autocmd
 endsnippet
 
 snippet fu "" b
-func ${1}
-endfunc
+func! ${1}(${2})
+endfunc " $1
 endsnippet
 
 snippet whi "" b

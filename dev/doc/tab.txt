@@ -1,1 +1,5 @@
 is jumplist independent among tabpage
+
+
+:tab drop vs :tabnew
+the difference being that "tab drop" opens a new tab on the named file OR jumps to the existing tab on the file if there already is one, whereas "tabnew" opens a new tab on the file regardless of whether or not there's already one open.

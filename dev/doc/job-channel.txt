@@ -1,0 +1,25 @@
+
+Job input from a buffer ~
+							*in_io-buffer*
+A special mode is when "in_top" is set to zero and "in_bot" is not set: Every
+time a line is added to the buffer, the last-but-one line will be sent to the
+job stdin.  This allows for editing the last line and sending it when pressing
+Enter.
+
+	let job = job_start('cat', {'in_io': 'buffer', 'in_name': 'cmd_in_io', 'out_io':'buffer','out_name': 'out_io', 'in_top':0})
+    call job_stop(job)
+    e cmd_in_io
+    e out_io
+
+10. Starting a job without a channel			*job-start-nochannel*
+To start another process without creating a channel: >
+    let job = job_start(command,
+	\ {"in_io": "null", "out_io": "null", "err_io": "null"})
+This starts {command} in the background, Vim does not wait for it to finish.
+
+
+12. Job options						*job-options*
+"env": dict		environment variables for the new process
+"cwd": "/path/to/dir"	current working directory for the new process;
+			if the directory does not exist an error is given
+

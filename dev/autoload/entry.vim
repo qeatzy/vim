@@ -3,15 +3,16 @@ if exists('*entry#init')
 endif
 func! entry#init() abort
 endfunc " entry#init
-set nocp shortmess+=I number relativenumber
+set nocp shortmess+=IF number relativenumber
 nn q :q<CR>
 nn gt <C-^>
 
 " [+] if only current modified, [+3] if 3 modified including current buffer.
 " [3] if 3 modified and current not, "" if none modified.
 func! IsBuffersModified()
-    " let cnt = CountModifiedBuffer()
-    let cnt = len(filter(getbufinfo(), 'v:val.changed == 1'))
+    " let cnt = len(filter(getbufinfo(), 'v:val.changed == 1'))
+    " exclude terminal buffers
+    let cnt = len(filter(getbufinfo(), 'v:val.changed == 1 && (getbufvar(v:val.bufnr, "&bt") != "terminal")'))
     return cnt == 0 ? '' : ( &modified ? ( '[+'. ( cnt > 1 ? cnt : '') . ']' ) : ( '['.cnt.']' ) )
 endfunc
 
@@ -99,7 +100,7 @@ let g:bundle_ignore += [['vim-unimpaired', 1.4]]
 let g:bundle_ignore += [['vim-surround', 1.6]]
 let g:bundle_ignore += [['tcomment_vim', 1.8]]
 let g:bundle_ignore += [['LeaderF', 3]]
-"let g:bundle_ignore += [['ultisnips', 2.0]]     " test for after/ directory
+let g:bundle_ignore += [['ultisnips', 2.0]]     " test for after/ directory
 "                   not function well, try if load normally solve it.
 "                   if it after orfer wrong?
 "                   seems no by load order, maybe vim.snippets format wrong, or
@@ -119,6 +120,7 @@ let g:bundle_ignore += ['emmet-vim']
 
 call bundle#init($HOME . "/.vim/vim")
 call bundle#start('')   " same as call bundle#init()  + call bundle#start()
+
 " call bundle#start()
 
 " call utils#init()

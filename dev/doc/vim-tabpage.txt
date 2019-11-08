@@ -1,0 +1,12 @@
+set showtabline? tabpagemax
+
+https://joshldavis.com/2014/04/05/vim-tab-madness-buffers-vs-tabs/
+
+https://stackoverflow.com/questions/21352309/indication-of-current-tab-in-vim
+There are 3 highligh groups for tabline highlighting.
+TabLine     tab pages line, not active tab page label                           
+TabLineFill tab pages line, where there are no labels                           
+TabLineSel  tab pages line, active tab page label
+
+tabline setting
+https://superuser.com/questions/331272/vim-show-the-index-of-tabs-in-the-tabline

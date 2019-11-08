@@ -3,7 +3,9 @@
 
 nnoremap <Space>f :set nomore<Bar>:ls<Bar>:set more<CR>:b<Space>
 nnoremap <Space>; :bm<CR>
-nnoremap <Space>m :bm<CR>
+"nnoremap <Space>m :bm<CR>
+nnoremap <Space>m :<C-u>call buf#next_modified()<CR>
+call CmdAlias('fg', ' norm! ')
 
 func! Buf_go_buffer(count) abort
     let l:count = (a:count == 0)? bufnr('#') : a:count
@@ -28,3 +30,35 @@ func! Buffer_left_0_right_1(cnt, is_right)
 endfunc
 nnoremap <Space>h :<c-u>call Buffer_left_0_right_1(v:count1, 0)<CR>
 nnoremap <Space>l :<c-u>call Buffer_left_0_right_1(v:count1, 1)<CR>
+
+"terminal
+augroup terminal
+    autocmd!
+    autocmd TerminalOpen * call term#add(expand('<abuf>'))
+    autocmd TerminalOpen * set laststatus=1
+    autocmd BufEnter * if getbufvar(expand('<abuf'), '&bt') == 'terminal' | set laststatus=1 | endif
+    autocmd BufLeave * if getbufvar(expand('<abuf'), '&bt') == 'terminal' | set laststatus=2 | endif
+    " autocmd BufEnter * echom 'BufEnter' expand('<amatch>') expand('<abuf>') expand('<afile>')
+    " autocmd BufLeave \!* echom 'BufLeave' expand('<amatch>') expand('<abuf>') expand('<afile>')
+    " autocmd TerminalOpen *    echom "TerminalOpen" expand('<amatch>') expand('<abuf>') expand('<afile>')
+augroup END " terminal
+tnoremap jj <C-w>N
+nnoremap <silent> <C-z> :<C-u>call term#switch_to_term_buffer()<CR>
+nnoremap <silent> gm :<C-u>call term#switch_to_term_buffer()<CR>
+inoremap <silent> <C-z> <C-o>:call term#switch_to_term_buffer()<CR>
+tnoremap <silent> gt <C-w>:b #<CR>
+tnoremap go <C-w><C-w>|" cause problem when paste, eg, https://github.com/goldfeld/vim-seek
+tnoremap qo <C-w><C-o>
+
+"tab page
+nn t :<C-u>call buf#tab(v:count)<CR>
+call CmdAlias('te', 'tab drop')
+call CmdAlias('tne',  'tabnew')
+call CmdAlias('tnew', 'tabnew')
+call CmdAlias('tn', 'tabnext')
+call CmdAlias('tp', 'tabprev')
+call CmdAlias('ts', 'tabs')
+call CmdAlias('tl', 'tabs')
+call CmdAlias('t0', 'tabfirst')
+call CmdAlias('t9', 'tablast')
+

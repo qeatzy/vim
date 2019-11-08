@@ -1,0 +1,3 @@
+https://vi.stackexchange.com/questions/7014/change-the-cursor-shape-in-operator-pending-mode
+This updates the cursor when entering/exiting operator pending mode.
+While it is a bit of a hacky solution I don't think it has any performance problems.
