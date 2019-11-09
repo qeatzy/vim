@@ -9,7 +9,20 @@ while running:
     pygame.time.wait(10)
 endsnippet
 
+snippet "loop q" "" b
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False${0}
+		if event.type == pygame.KEYDOWN:
+			if event.key == pygame.K_q:
+				running = False
+    pygame.time.wait(10)
+endsnippet
+
 snippet sci "screen init" b
+size = ${0:}
 screen = pygame.display.set_mode(size)
 endsnippet
 

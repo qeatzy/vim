@@ -160,5 +160,7 @@ does ctrlp or leaderf accept custome provider
 
 <space>m go last modified buffer in MRU order.
 
+use hook to tell vim, after a process has finished in terminal buffer zsh.
+
 dev/doc/vim-operator.txt
 dev/doc/vim-edit.txt

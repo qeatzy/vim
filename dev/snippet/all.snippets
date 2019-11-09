@@ -1,4 +1,5 @@
 # {{{ VISUAL transformation
+# vim: ft=snippets
 
 # not work, "  ", !  !, or no delimiter, none work. use <space>a instead.
 # use plain viw then r<space> to transform to space
@@ -24,3 +25,10 @@ endsnippet
 # <tag>${VISUAL:inside text/should/is/g}</tag>
 # endsnippet
 # }}} VISUAL transformation
+
+snippet tex "" b
+\a {${1}}
+\b {sec:${1/ /_/g}}
+$0
+\b {sec:${1/ /_/g}}
+endsnippet

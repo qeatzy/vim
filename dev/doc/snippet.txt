@@ -1,0 +1,21 @@
+
+list 
+https://vim.fandom.com/wiki/Category:Automated_Text_Insertion
+
+very promising
+https://stackoverflow.com/questions/28972221/ultisnips-create-argument-list-with-placeholders
+and 
+https://github.com/SirVer/ultisnips/blob/master/doc/examples/tabstop-generation/README.md
+look into
+https://github.com/SirVer/ultisnips/blob/master/doc/examples/snippets-aliasing/README.md
+https://github.com/SirVer/ultisnips
+
+The ${n} notation is used to define a tab stop without a placeholder.
+The ${n:foo} notation is used to define a tab stop with a placeholder.
+The $n notation is used to mirror the value inserted at the corresponding tab stop.
+https://stackoverflow.com/questions/39446024/vim-snippet-with-multiple-references-to-a-placeholder-doesnt-work
+
+snippets are like the built-in :abbreviate on steroids, usually with parameter insertions, mirroring, and multiple stops inside them.
+
+
+

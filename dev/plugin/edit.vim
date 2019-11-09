@@ -37,6 +37,9 @@ nn cp "_c$
 nn <Space>d :<C-u>call edit#duplicate_current_line(v:count1)<CR>
 " ino <S-CR> <C-o>o|" <S-Enter> to add a new line, like in pycharm
 ino  <C-o>o|" on cygwin, <C-Enter> works, <S-Enter> not work
+ino m <C-o>o|" Alt-m
+nn \d :g//d_<CR>
+nn \v :v//d_<CR>
 
 "cms
 nn g[ :Commentary<CR>|" accept count

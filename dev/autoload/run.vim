@@ -119,6 +119,8 @@ func! run#r(...) abort
         call io#notify('')
     elseif ch ==# 'p'
         pu +    " no cygwin, + `:reg +` show reg *, `:pu +` use reg *
+    elseif ch ==# 'd'   " || ch ==# 'c'
+        call feedkeys('"_d')
     elseif ch ==# 's'
        set opfunc=edit#gn_motion_old
        " set opfunc=sad#search_and_replace_forward
