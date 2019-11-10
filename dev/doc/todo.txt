@@ -137,6 +137,7 @@ noremap! b <S-Left>|" <Alt-b> move word back        -- both insert and cmdline 
 noremap! f <S-Right>|" <Alt-f> move word forward
 after `nn dp "_d$`, `<C-o>dp` in insert mode to discard remain chars in current line.
 after `nn s my-alternative-sneak-easymotion`, `<C-o>s + key + key` to go any where in screen.
+echo screenrow() win_screenpos('.')
 
 Your problem with Vim is that you don't grok vi.
 https://stackoverflow.com/questions/1218390/what-is-your-most-productive-shortcut-with-vim
@@ -161,6 +162,10 @@ does ctrlp or leaderf accept custome provider
 <space>m go last modified buffer in MRU order.
 
 use hook to tell vim, after a process has finished in terminal buffer zsh.
+
+ignore terminal buffer in ctrlp-buffer.
+
+2 rp to `put *` and add two empty line before that.
 
 dev/doc/vim-operator.txt
 dev/doc/vim-edit.txt

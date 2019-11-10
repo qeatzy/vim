@@ -2,6 +2,10 @@ augroup plugin_ctrlp
 autocmd CmdUndefined CtrlP* ++once call bundle#load('ctrlp.vim')
 augroup END
 
+  let g:ctrlp_custom_ignore = {
+    \ 'file': '!zsh'
+    \ }
+
 let g:ctrlp_clear_cache_on_exit = 0
 
 "ctrlp, see " grep " fzf " denite " leaderf

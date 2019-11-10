@@ -2,6 +2,7 @@
 autocmd BufWritePost dev/autoload/buf.vim source %
 autocmd BufWritePost dev/autoload/run.vim source %
 autocmd BufWritePost dev/autoload/edit.vim source %
+autocmd BufWritePost dev/autoload/path.vim source %
 autocmd BufWritePost dev/autoload/buf.vim echo localtime()
 autocmd BufWritePost dev/autoload/buf.vim
 autocmd! BufWritePost dev/autoload/buf.vim

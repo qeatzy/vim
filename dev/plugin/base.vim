@@ -11,8 +11,10 @@ endif
 
 
 set nobackup swapfile undofile
-set directory=~/.vim/.vimswap//      " comma separated string, first usable one will be used. directory ending with '//' using full pathname.
 set undodir=~/.vim/.vimundo//
+set directory^=~/.vim/.vimswap//
+set directory=~/.vim/.vimswap//,~/tmp,/var/tmp,/tmp
+" comma separated string, first usable one will be used. directory ending with '//' using full pathname.
 set ignorecase smartcase
 set nohlsearch incsearch
 set hidden

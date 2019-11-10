@@ -12,14 +12,13 @@ let g:rdh_dirs = {}
 func! dirbuf#goparent(cnt) abort
     let path = expand('%')
     if path == '' | let path = path#cwd() | endif
-    if isdirectory(path)
-        if get(b:, 'dirbuf')[0] == '/'
-            call dirbuf#openpath(path#abspath(path . '/..'))
-        else
+    let isdir = isdirectory(path)
+    if isdir && get(b:, 'dirbuf')[0] != '/'     " not loaded
             call dirbuf#openpath(path)
-        endif
     else
-            call dirbuf#openpath(path#abspath(path . '/..'))
+            let g:lastpath = path
+            let g:lastpath_isdir = isdir
+            call dirbuf#openpath(path#abspath(path . repeat('/..',a:cnt)))
     endif
 endfunc " dirbuf#goparent
 
@@ -28,10 +27,16 @@ fun! KeyPrefix_r() abort
         echo "\r r"
         let c = getchar()
         let ch = nr2char(c)
-        echo c "|" ch
+        " echo c "|" ch
         if c is# "\<BS>" || ch ==# "q"
             break
-        elseif ch == "m"
+        elseif ch ==# "t"
+            call dirbuf#openpath(expand('%'), 'path#gd')
+            break
+        elseif ch ==# "s"
+            call dirbuf#openpath(expand('%'), 'path#gs')
+            break
+        elseif ch ==# "m"
             " confirm echo 'rm ' . b:dirbuf . '/' . getline('.')
             let cmd = "rm '" . escape(b:dirbuf . '/' . getline('.'),"'") . "'"
             let choice = io#confirm(cmd . " (y)es (n)o"
@@ -44,44 +49,70 @@ fun! KeyPrefix_r() abort
 endfunc
 
 func! dirbuf#openpath(path, ...) abort
-    let type = get(a:, 1, 'dir')
-    let force = get(a:, 2, 0)
     let abspath = path#abspath(a:path)
-    let b = get(g:dh_dirs, abspath)
-    if type(b) == v:t_number
-        let b = s:addpath(abspath)
+    let dh = get(g:dh_dirs, abspath)
+    if type(dh) == v:t_number
+        let dh = s:addpath(abspath)
     endif
-    let d = path#upget(b.realpath)
-    if force || b.viewtime < d.mtime || b.viewttype != type
-        if type == 'tree'
-            if !has_key(d, 'tree_cache')
-                echom "tree_cache not build yet, try again later"
-                call path#test(abspath)
-                return
-            else
-                let files = d.tree_cache
+    let d = path#upget(dh.realpath)
+    let Sorter = get(a:, 1)
+    if dh.viewtime < d.mtime || Sorter isnot# 0
+        if Sorter is# 0
+            let files = d.df
+        else
+            if type(Sorter) isnot# 2   " funcref
+                let Sorter = function(Sorter)
             endif
-        elseif type == 'dir'
-            let files = d.dl
+            let files = Sorter(d)
         endif
-        let b.viewtime = d.mtime
-        let b.viewttype = type
+        let dh.viewtime = d.mtime
         let num = len(files) + 1
-        let nr = b.bufnr
+        let nr = dh.bufnr
         if !empty(getbufline(nr, num, num))
             call deletebufline(nr, num, '$')
         endif
         call setbufline(nr, 1, files)
     endif
     if get(a:, 2, 1)
-        exec 'b ' . b.bufnr
+        exec 'b ' . dh.bufnr
     endif
+    if !exists('files') | let files = getline(1,'$') | endif
+    call s:cursor(abspath, files)
 endfunc " dirbuf#openpath
+
+let g:lastpath = get(g:, 'lastpath', '')
+func! s:cursor(abspath, files)
+    let n = len(a:abspath)
+    " if len(g:lastpath) > n && g:lastpath[n] ==# '/' && g:lastpath[:n-1] ==# a:abspath
+    if len(g:lastpath) > n && g:lastpath[:n-1] ==# a:abspath
+        if g:lastpath[n] !=# '/'
+            if n == 1   " a:abspath ==# '/'
+                let n = 0
+            else
+                return
+            endif
+        endif
+        let stop = stridx(g:lastpath, '/', n+1)
+        let name = g:lastpath[n+1:stop]
+        if stop == -1 && g:lastpath_isdir
+            let name .= '/'
+        endif
+        if name !=# getline('.')
+            let idx = index(a:files, name) + 1
+            let pos = getcurpos()
+            let pos[1] = idx
+            call setpos('.', pos)
+        endif
+    endif
+    " let g:lastpath = a:abspath
+    " let g:lastpath_isdir = 1
+endfunc " s:cursor
+    
 
 func! s:addpath(abspath) abort
     let bufname = a:abspath
-    let dh = get(g:dh_dirs, bufname, {})
-    if empty(dh)
+    let dh = get(g:dh_dirs, bufname)
+    if dh is# 0
         let realpath = bufname == '/' ? '/' : resolve(a:abspath)
         let nr = bufadd(bufname)
         call setbufvar(nr, '&buftype', 'nofile')
@@ -89,9 +120,7 @@ func! s:addpath(abspath) abort
         call setbufvar(nr, 'dirbuf', bufname)
         call setbufvar(nr, '&buflisted', 0)
         sil call bufload(nr)    " no cost, removal cause bug
-        let dh['bufnr'] = nr
-        let dh['realpath'] = realpath
-        " let dh['d'] = path#get(realpath)  " do not, may be invalid later
+        let dh = {'bufnr': nr, 'realpath': realpath}
         let dh['viewtime'] = -1
         let g:dh_dirs[bufname] = dh
         let g:rdh_dirs[nr] = bufname
@@ -127,7 +156,9 @@ endfunc " dirbuf#dh_enter
 
 func dirbuf#setup() abort
     nn <buffer><silent> i :<C-u>call dirbuf#dh_enter()<CR>
-    nn <buffer> t :<C-u>call dirbuf#openpath(expand('%'), 'tree')<CR>
-    nn <buffer> R :<C-u>call dirbuf#openpath(expand('%'), 'dir', 1)<CR>
+    nn <buffer> t :<C-u>call path#tree(b:dirbuf)<CR>:call dirbuf#openpath(expand('%'), {d -> d.tree})<CR>
+    " nn <buffer> R :<C-u>call dirbuf#openpath(expand('%'), 'dir', 1)<CR>
+    nn <buffer> R :<C-u>call dirbuf#openpath(expand('%'),{d -> d.df})<CR>
     nn <buffer> r :<C-u>call KeyPrefix_r()<CR>
+    nn <buffer> p :<C-u>call path#info()<CR>
 endfunc

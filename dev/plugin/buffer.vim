@@ -32,6 +32,7 @@ nnoremap <Space>h :<c-u>call Buffer_left_0_right_1(v:count1, 0)<CR>
 nnoremap <Space>l :<c-u>call Buffer_left_0_right_1(v:count1, 1)<CR>
 
 "terminal
+if $VIM_TERMINAL is# ''
 augroup terminal
     autocmd!
     autocmd TerminalOpen * call term#add(expand('<abuf>'))
@@ -43,12 +44,13 @@ augroup terminal
     " autocmd TerminalOpen *    echom "TerminalOpen" expand('<amatch>') expand('<abuf>') expand('<afile>')
 augroup END " terminal
 tnoremap jj <C-w>N
-nnoremap <silent> <C-z> :<C-u>call term#switch_to_term_buffer()<CR>
 nnoremap <silent> gm :<C-u>call term#switch_to_term_buffer()<CR>
+nnoremap <silent> <C-z> :<C-u>call term#switch_to_term_buffer()<CR>
 inoremap <silent> <C-z> <C-o>:call term#switch_to_term_buffer()<CR>
 tnoremap <silent> gt <C-w>:b #<CR>
 tnoremap go <C-w><C-w>|" cause problem when paste, eg, https://github.com/goldfeld/vim-seek
 tnoremap qo <C-w><C-o>
+endif   " if $VIM_TERMINAL is# ''
 
 "tab page
 nn t :<C-u>call buf#tab(v:count)<CR>

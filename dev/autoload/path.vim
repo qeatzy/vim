@@ -1,212 +1,40 @@
-" .+,$s/\<dirbufcore#/path#/g
-if exists('*path#init')
-    finish
-endif
-func! path#init() abort
-endfunc " path#init
-
-" respect symlinks, on the contrary, getcwd() don't.
-let s:cwd = $PWD
-func! path#updatecwd(path) abort
-" autocmd DirChanged global call path#updatecwd(expand('<afile>'))
-    let g:a = a:path
-    let s:cwd = a:path[0] == '/' ? a:path : path#simplify_abs(s:cwd . '/' . a:path)
-endfunc " path#updatecwd
-
-func! path#cwd() abort
-    return s:cwd
-endfunc " path#cwd
-
-func! path#update_tree_incremental() abort
-endfunc " path#update_tree_incremental
-
-let s:batch_n_stat = 800
-func! path#update_tree_timer(realpath, time) abort
-    if has_key(s:, 'update_tree_timer') | echom "in progress" | return | endif
-    let s:update_tree_timer = reltimefloat(reltime())
-    " echo reltimefloat(reltime()) - reltimefloat(reltime())
-    let stack = [a:realpath]
-    let [idx, second_pass] = [0,0]
-    func! Callback(timer) closure
-        echom second_pass idx len(stack) timer
-        let cnt = 0
-        let n = len(stack)
-        while idx < n
-            let [d, n_stat] = path#update(stack[idx])
-            let cnt += 1 + n_stat
-            if !second_pass
-                " call extend(stack, d['dirs'])
-                let base = stack[idx] . '/'
-                for dir in map(copy(d['dirs']), 'base . v:val')
-                    if getftype(dir) == 'link'
-                        let dir = resolve(dir)
-                        if dir[0] != '/'
-                            let dir = path#simplify_abs(base . dir)
-                        endif
-                    endif
-                    call add(stack, dir)
-                endfor
-            endif
-            let idx += 1
-            if cnt > s:batch_n_stat
-                return
-            endif
-        endwhile
-        if idx == len(stack)
-            if second_pass
-                call timer_stop(timer)
-                let msg = printf('tree [%s] updated, %3.2f seconds elapsed',
-                            \ a:realpath, reltimefloat(reltime()) - s:update_tree_timer)
-                echom msg
-                call popup_notification(msg, {'pos':'center'})
-                unlet s:update_tree_timer
-            endif
-            let second_pass += 1
-            let idx = 0
-            call reverse(stack)
-        endif
-    endfunc
-    let time = max([a:time, 600])
-    let timer = timer_start(time, funcref('Callback'), {"repeat": -1})
-    " let [d, abspath, realpath, updated] = s:add(a:root)
-    " call append(stack, root)
-endfunc " path#update_tree
-
-func! path#test(root, ...) abort
-    let time = get(a:, 1, 1200)
-    let ctime = localtime()
-    let abspath = path#abspath(a:root)
-    let realpath = abspath == '/' ? '/' : resolve(abspath)
-    call path#update_tree_timer(realpath, time)
-    " echom "update tree: " a:root "[time]: " localtime() - ctime
-endfunc " path#test
-func! path#update_tree(root) abort
-    " post-order traversal
-    let abspath = path#abspath(a:root)
-    let realpath = abspath == '/' ? '/' : resolve(abspath)
-    let [d, n_stat] = s:add(a:root)
-    for dir in d['dirs']
-        call path#update_tree(realpath . '/' . dir)
-    endfor
-    let [d, n_stat] = s:add(a:root)  " to build tree_cache
-    return [d, n_stat]
-endfunc " path#update_tree
-func! s:update_trees() abort
-    for root in keys(g:trees)
-        for i in range(2)
-            call path#update_tree(root)
-            echom "updated tree: " root
-        endfor
-    endfor
-endfunc " s:update_trees
-
-let g:dirs = {}
-let g:dirs_changed = {}
-func! s:add(realpath)
-    let base = a:realpath == '/' ? '/' : a:realpath . '/'
-    let d = get(g:dirs, a:realpath, {})
+if !exists('g:ndirs') | let g:ndirs = {} | endif
+func! s:add(realpath) abort
+    let d = get(g:ndirs, a:realpath)
+    if d is# 0 | let d = {'mtime': -1, 'realpath': a:realpath, 'base': a:realpath == '/' ? '/' : a:realpath . '/'} | let g:ndirs[a:realpath] = d | endif
     let mtime = getftime(a:realpath)
-    let old_mtime = get(d,'mtime',-1)
-    let updated = old_mtime < mtime
-    let n_stat = 1
-    if empty(d) || updated
-        let current_time = localtime()
-        let dl_cache = []   " dirs + files
+    if mtime > d.mtime
+        let base = d.base
         let dirs = []
         let files = []
+        let df = []     " dirs + files, dirs append '/'
+        let links = []
         for name in readdir(a:realpath)
-            let isdir = isdirectory(base . name)
-            if isdir
+            let abspath = base . name
+            if isdirectory(abspath)
                 call add(dirs, name)
-                let name = name . '/'
-                call add(dl_cache, name)
+                call add(links, getftype(abspath) ==# 'link' ? resolve(abspath) : 0)
+                call add(df, name . '/')
             else
                 call add(files, name)
             endif
         endfor
-        call extend(dl_cache, files)
+        call extend(df, files)
         let d['mtime'] = mtime
         let d['dirs'] = dirs
         let d['files'] = files
-        let d['dl'] = dl_cache
-        " let d['not_tree_builded'] 
-        let d['tree'] = {}
-        " if has_key(d, 'tree_cache') | call remove(d, 'tree_cache') | endif
-        " let not_tree_builded = {}   " name of subdir in either here or `tree`
-        " let tree = {}   " name: tree cache of subdir, if name in tree.
-        let g:dirs[a:realpath] = d
-        let n_stat += len(dl_cache)
+        let d['df'] = df
+        let d['links'] = links
     endif
-    if !has_key(d, 'tree_cache')
-        let not_tree_builded = {}  " temporary , not used in future
-        let [tree, dirs, files] = [d['tree'], d['dirs'], d['files']]
-        " let [tree, dirs, files] = [get(d,'tree',{}), d['dirs'], d['files']]
-        if len(dirs) == len(tree)
-            let d['tree_cache'] = files
-        else
-            for name in dirs
-                if has_key(tree, name)
-                    continue
-                endif
-                let path_subdir = base . name
-                if getftype(path_subdir) == 'link'
-                    let path_subdir = resolve(path_subdir)
-                endif
-                let subdir = get(g:dirs, path_subdir)
-                if type(subdir) == v:t_number  " get() return 0
-                    let not_tree_builded[name] = 0      " not traversed yet
-                else
-                    let tree_cache = get(subdir, 'tree_cache')
-                    if type(tree_cache) != v:t_number   " tree cached
-                        let prefix = name . '/'
-                        let tree[name] = [prefix]
-                        call extend(tree[name], map(copy(tree_cache), 'prefix . v:val'))
-                    elseif len(subdir['tree']) != len(subdir['dirs'])
-                        let not_tree_builded[name] = 1  " traversed, but not_tree_builded
-                    else
-                        let not_tree_builded[name] = 2  " tree builded, not tree cached
-                    endif
-                endif
-            endfor
-            " if empty(not_tree_builded)
-            if len(dirs) == len(tree)
-                " choose to build tree_cache eagerly, once all subdirs built.
-                " tree cached implies tree builed.
-                " or better to expose a method/function to build tree_cache from
-                "   tree + files only when actually get called.
-                let tree_cache = copy(d['files'])
-                " if !empty(dirs) | echom "tree built" len(dirs) abspath | endif
-                for name in dirs
-                    let tree_cache += tree[name]
-                endfor
-                let d['tree_cache'] = tree_cache
-            endif
-        endif
-        " let tree_builded = current_time
-    endif
-    return [d, n_stat]
-endfunc " s:add
-
-func! path#get(realpath) abort
-    let d = get(g:dirs, a:realpath)
-    if type(d) == v:t_number
-        let [d, n_stat] = s:add(a:realpath)
-    endif
+    let d['atime'] = localtime()
     return d
-endfunc " path#get
+endfunc
+" call s:add(resolve(path#abspath('.')))
+" echo g:ndirs
 
 func! path#upget(realpath) abort
-    return s:add(a:realpath)[0]
-endfunc " path#get
-
-func! path#update(realpath) abort
     return s:add(a:realpath)
 endfunc " path#get
-
-    " if !isdirectory(a:path) | echoerr 'not a directory [' . a:path . '] -- ' expand('<sfile>') | return | endif
-    " let abspath = path#abspath(a:path)
-    " let realpath = abspath == '/'? '/' : resolve(abspath)
-    " return [d, abspath, realpath, updated]
 
 func! path#abspath(path) abort
     return path#simplify_abs(a:path[0] == '/' ? a:path : path#cwd() . '/' . a:path)
@@ -238,26 +66,158 @@ func! path#simplify_abs(abspath) abort
     return abspath
 endfunc " path#simplify
 
-" func! path#abspath(path) abort
-"     return path#simplify(a:path[0] == '/' ? a:path : path#cwd() . '/' . a:path)
-" endfunc " path#abspath
-"
-" func! path#simplify(path) abort
-"     let lst = []
-"     let absolute = (a:path[0] == '/')
-"     let ns = split(a:path, '/')
-"     for name in ns
-"         if name == '..'
-"             if !empty(lst) && lst[-1] != '..'
-"                 call remove(lst, -1)
-"             elseif !(empty(lst) && absolute)
-"                 call add(lst, '..')
-"             endif
-"         elseif name != '.' && name != ''
-"             call add(lst, name)
-"         endif
-"     endfor
-"     let path = absolute ? '/' . join(lst, '/') : join(lst, '/')
-"     return path == '' ? '.' : path
-" endfunc " path#simplify
-"
+" respect symlinks, on the contrary, getcwd() don't.
+let s:cwd = $PWD
+func! path#updatecwd(path) abort
+" autocmd DirChanged global call path#updatecwd(expand('<afile>'))
+    let g:a = a:path
+    let s:cwd = a:path[0] == '/' ? a:path : path#simplify_abs(s:cwd . '/' . a:path)
+endfunc " path#updatecwd
+
+func! path#tree(path)
+    let abspath = path#abspath(a:path)
+    let realpath = abspath == '/' ? '/' : resolve(abspath)
+    let stack = [realpath]
+    let dstack = []
+    let ftree = {realpath: 1}
+    let g:d1=[]
+    while !empty(stack)
+        let d = path#upget(remove(stack,-1))
+        call add(g:d1,d.realpath)
+        call add(dstack, d)
+        let [base, dirs, links] = [d.base, d.dirs, d.links]
+        for i in range(len(dirs))
+            let islink = links[i] isnot# 0
+            let realpath = islink ? links[i] : base . dirs[i]
+            if !islink
+                call add(stack, realpath)
+            endif
+            " let tflag = get(ftree, realpath)
+            " if tflag == 0
+            "     call add(stack, realpath)
+            " endif
+            " let ftree[realpath] = tflag + islink+1 " bitwise or, but only 1 non-link, thus tflag - (tflag & 1) // 2 == count of links
+        endfor
+    endwhile
+    let dtree = {}  " those being linked >=2 times in tree traversal, only links, no non-link, i.e., tflag > 2 && (tflag & 1 == 0)
+    let g:d2 = reverse(copy(dstack))
+    for d in reverse(dstack)
+        let dirs = d.dirs
+        if len(dirs) == 0
+            let d['tree'] = d.files
+            continue
+        endif
+        let links = d.links
+        let tree = copy(d.files)
+        let base = d.base
+        for i in range(len(dirs))
+            let islink = links[i] isnot# 0
+            let realpath = islink ? links[i] : base . dirs[i]
+            let tflag = get(ftree, realpath)
+            let name = dirs[i] . '/'
+            call add(tree, name)
+            if !islink
+                try
+                let subtree = map(copy(g:ndirs[realpath].tree), 'name . v:val')
+                catch  /E716/
+                    echo name realpath d.realpath
+                    debug echo 33
+                endtry
+                call extend(tree, subtree)
+            endif
+            " if tflag <= 2
+            "     let build = 1
+            " else
+            "     if and(tflag, 1)
+            "         if !islink
+            "             let build = 1
+            "         endif
+            "     else
+            "         if get(dtree, realpath) is# 0
+            "             let build = 1
+            "             dtree[realpath] = 1
+            "         endif
+            "     endif
+            " endif
+            " if build
+            "     let name = dirs[i] . '/'
+            "     try
+            "     let subtree = map(copy(g:ndirs[realpath].tree), 'name . v:val')
+            "     catch  /E716/
+            "         debug echo 33
+            "     endtry
+            "     call add(tree, name)
+            "     call extend(tree, subtree)
+            " endif
+        endfor
+        let d['tree'] = tree
+    endfor
+    return tree
+endfunc " path#tree
+
+func! path#cwd() abort
+    return s:cwd
+endfunc " path#cwd
+
+func! s:size(x)
+    if a:x < 1024
+        return a:x
+    elseif a:x < 1048576
+        return printf('%.1fK', a:x / 1024.0)
+    elseif a:x < 1073741824
+        return printf('%.1fM', a:x / 1048576.0)
+    elseif a:x < 1099511627776
+        return printf('%.1fG', a:x / 1073741824.0)
+    endif
+    return a:x
+endfunc " s:size
+
+func! path#info(...) abort
+    let path = b:dirbuf . '/' .getline('.')
+    let size = getfsize(path)
+    let time =  getftime(path)
+    echo s:size(size) strftime('%Y-%m-%d %H-%M-%S', time)
+endfunc " path#info
+  " r!ls --help
+  " -S                         sort by file size, largest first
+  " -t                         sort by modification time, newest first
+  "     --time-style=STYLE     with -l, show times using style STYLE:
+  "                              full-iso, long-iso, iso, locale, or +FORMAT;
+  "                              FORMAT is interpreted like in 'date'; if FORMAT
+  "                              is FORMAT1<newline>FORMAT2, then FORMAT1 applies
+  "                              to non-recent files and FORMAT2 to recent files;
+  "                              if STYLE is prefixed with 'posix-', STYLE
+  "                              takes effect only outside the POSIX locale
+    " A timestamp is considered to be recent if it is less than six months old.
+    " https://unix.stackexchange.com/questions/237531/why-does-ls-all-show-time-for-some-files-but-only-year-for-others
+
+func! s:cmp(l1,l2) abort
+    let a = a:l1[0]
+    let b = a:l2[0]
+    return (a>b) - (a<b)
+endfunc " s:cmp
+let s:Cmp = function('s:cmp')
+
+func! path#gs(d)
+    let base = a:d.base
+    let files = sort(map(copy(a:d.df), '[getfsize(base . v:val), v:val]'), s:Cmp)
+    let files = reverse(map(files, 'v:val[1]'))
+    return files
+endfunc " path#gs
+
+func! path#gd(d)
+    let base = a:d.base
+    let files = sort(map(copy(a:d.df), '[getftime(base . v:val), v:val]'), s:Cmp)
+    let files = reverse(map(files, 'v:val[1]'))
+    return files
+    " let files = sort(map(copy(a:d.df), {i,v -> [getftime(base . v),v]))
+    let files = a:d.df
+    let time = getftime(base . files[0])
+    let files = map(copy(files), {i,v -> [getftime(base . v),v]})
+    let files = sort(files)
+    let files = reverse(map(files, 'v:val[1]'))
+    return files
+    " echo sort([[1,'a'],[0,'b']])
+    " h sort(
+    " echo getftime($PWD. '/dev')
+endfunc " path#gd
