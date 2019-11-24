@@ -1,0 +1,2 @@
+https://stackoverflow.com/questions/3316244/set-gvim-font-in-vimrc-file
+set font in the menu, then :set guifont? to show what is setting.

@@ -1,0 +1,3 @@
+
+h \u |" upper [A-Z]
+h \K |" like "\k", but excluding digits (keyword characters)

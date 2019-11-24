@@ -1,0 +1,4 @@
+
+h has-patch
+	echo has("patch-7.4.248")
+	echo has("patch-8.1.1120")  |" readdir()

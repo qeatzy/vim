@@ -1,0 +1,94 @@
+nn gh
+echo input('>>> ')
+for i in items(g:dh_dirs) | echo i | endfor
+echo map(copy(g:dh_dirs), {k,v -> v.viewtime})
+let lst = items(map(copy(g:dh_dirs), {k,v -> v.viewtime}))
+let lines = map(sort(copy(lst), 'cmp#k1_r'), 'v:val[0]') | echo lines
+n ''
+let bufnr = 23
+b23 | call io#getinput([lines], 23)
+delfu cmp#k1
+echo g:dh_dirs
+
+call io#fuzzyselect([],{47:'io#searchMotion',18:'io#appendRegister',13:{->1},10:'io#cursorDown',11:'io#cursorUp',0:'io#putchar'})
+call io#searchMotion([],char2nr('/'))
+-- add <C-r> support in io#keyloop() to insert into cmd from register.
+https://www.v2ex.com/t/613750#reply3
+    -- (可以作为参考) vim 的模糊查找插件 LeaderF 新功能介绍（二） - V2EX
+        https://www.v2ex.com/member/Yggdroot/topics
+https://www.v2ex.com/t/527045#reply15
+    -- vim 的 grep 插件`Leaderf rg`： grep 和模糊匹配的完美结合 - V2EX
+https://www.v2ex.com/t/522570#reply15
+    vim 的模糊查找插件 LeaderF 新功能介绍 - V2EX
+    LeaderF 支持用空格（可以用g:Lf_AndDelimiter来修改）作为 And 操作符来进行模糊匹配。
+    > fruzzy （ denite 和 ctrlp 的 matcher 之一）按匹配精准度和匹配速度来衡量它们的性能的话，leaderf 的表现是最好的。
+    > Note: leaderf 的关键部分是用 c 写的
+    13
+tamlok   282 天前 via Android
+还是希望能在 leaderf 的模式中支持 vim 命令行的一些快捷键，比如`ctrl-r ctrl-w`输入当前光标所在单词，`ctrl-r`读取特定寄存器等。
+    14
+Yggdroot   282 天前 via Android
+@tamlok 不知道你的应用场景是怎样的？用 Leaderf 一般只要输入几个字符就可以找到目标，想搜光标下的单词，有个'--cword'选项，也支持 ctrl-v 粘贴，读寄存器来做什么呢
+https://www.v2ex.com/t/410079#reply9
+    如何使用 Python 编写 vim 插件 - V2EX
+%pydo return line[::-1]
+echo x
+echo g:ndirs[expand('%:p:h')].tree[-20:-4]
+echo g:ndirs[expand('%:p:h')].tree[-4]
+echo g:ndirs[expand('%:p:h')].tree[-4][-1:] == "/"
+echo filter(copy(g:ndirs[expand('%:p:h')].tree), 'v:val[-1:] == "/"')
+wincmd n
+wincmd q
+delfu io#fuzzyselect
+
+h map(
+h sort(
+
+
+LeaderfBufTag
+LeaderfBufTagAll
+LeaderfBufTagAllCword
+LeaderfBufTagAllPattern
+LeaderfBufTagCword
+LeaderfBufTagPattern
+LeaderfBuffer
+LeaderfBufferAll
+LeaderfBufferCword
+LeaderfBufferPattern
+LeaderfColorscheme
+LeaderfFile
+LeaderfFileCword
+LeaderfFileFullScreen
+LeaderfFilePattern
+LeaderfFunction
+LeaderfFunctionAll
+LeaderfFunctionAllCword
+LeaderfFunctionAllPattern
+LeaderfFunctionCword
+LeaderfFunctionPattern
+LeaderfHelp
+LeaderfHelpCword
+LeaderfHelpPattern
+LeaderfHistoryCmd
+LeaderfHistorySearch
+LeaderfLine
+LeaderfLineAll
+LeaderfLineAllCword
+LeaderfLineAllPattern
+LeaderfLineCword
+LeaderfLinePattern
+LeaderfMru
+LeaderfMruCwd
+LeaderfMruCwdCword
+LeaderfMruCwdPattern
+LeaderfMruCword
+LeaderfMruPattern
+LeaderfRgInteractive
+LeaderfRgRecall
+LeaderfSelf
+LeaderfTabBuffer
+LeaderfTabBufferAll
+LeaderfTag
+LeaderfTagCword
+LeaderfTagPattern
+

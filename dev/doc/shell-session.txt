@@ -1,0 +1,10 @@
+
+reptyr use <sys/ptrace.h>
+cygwin has no <sys/ptrace.h>
+
+Security considerations
+Setting ptrace_scope as 0 is not recommended.
+A reasonable approach is to set ptrace_scope to 2 and then allow reptyr to use ptrace:
+echo 2 | sudo tee /proc/sys/kernel/yama/ptrace_scope
+sudo setcap CAP_SYS_PTRACE+pe /usr/bin/reptyr
+https://superuser.com/questions/1293298/how-to-detach-ssh-session-without-killing-a-running-process/1293306

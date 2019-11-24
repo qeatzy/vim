@@ -6,6 +6,8 @@ nnoremap <Space>; :bm<CR>
 "nnoremap <Space>m :bm<CR>
 nnoremap <Space>m :<C-u>call buf#next_modified()<CR>
 call CmdAlias('fg', ' norm! ')
+nn 'e :<C-u>call buf#gmarkbuf('e')<CR>
+nn me mE
 
 func! Buf_go_buffer(count) abort
     let l:count = (a:count == 0)? bufnr('#') : a:count
@@ -35,7 +37,8 @@ nnoremap <Space>l :<c-u>call Buffer_left_0_right_1(v:count1, 1)<CR>
 if $VIM_TERMINAL is# ''
 augroup terminal
     autocmd!
-    autocmd TerminalOpen * call term#add(expand('<abuf>'))
+    " bug: TerminalOpen not fire
+    " autocmd TerminalOpen * call term#add(expand('<abuf>'), expand('<afile>'))
     autocmd TerminalOpen * set laststatus=1
     autocmd BufEnter * if getbufvar(expand('<abuf'), '&bt') == 'terminal' | set laststatus=1 | endif
     autocmd BufLeave * if getbufvar(expand('<abuf'), '&bt') == 'terminal' | set laststatus=2 | endif
@@ -44,10 +47,11 @@ augroup terminal
     " autocmd TerminalOpen *    echom "TerminalOpen" expand('<amatch>') expand('<abuf>') expand('<afile>')
 augroup END " terminal
 tnoremap jj <C-w>N
-nnoremap <silent> gm :<C-u>call term#switch_to_term_buffer()<CR>
-nnoremap <silent> <C-z> :<C-u>call term#switch_to_term_buffer()<CR>
-inoremap <silent> <C-z> <C-o>:call term#switch_to_term_buffer()<CR>
-tnoremap <silent> gt <C-w>:b #<CR>
+nnoremap <silent> gm :<C-u>call term#switch_to_term_buffer(v:count)<CR>
+nnoremap <silent> <C-z> :<C-u>call term#switch_to_term_buffer(v:count)<CR>
+inoremap <silent> <C-z> <C-o>:call term#switch_to_term_buffer(v:count)<CR>
+" tnoremap <silent> gt <C-w>:b #<CR>
+tnoremap <silent> <C-^> <C-w>:b #<CR>
 tnoremap go <C-w><C-w>|" cause problem when paste, eg, https://github.com/goldfeld/vim-seek
 tnoremap qo <C-w><C-o>
 endif   " if $VIM_TERMINAL is# ''
@@ -64,3 +68,9 @@ call CmdAlias('tl', 'tabs')
 call CmdAlias('t0', 'tabfirst')
 call CmdAlias('t9', 'tablast')
 
+func! s:goGlobalMarkH()
+let g:bufnr = getpos("'H")[0] | if g:bufnr | exec 'b' .g:bufnr | endif
+endfunc
+" mark help file, then go back to it.
+" nn `H :<C-u>let g:bufnr = getpos("'H")[0] | if g:bufnr | exec 'b' .g:bufnr | endif<CR>
+nn `H :<C-u>s:goGlobalMarkH()<CR>

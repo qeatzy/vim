@@ -17,5 +17,53 @@ https://stackoverflow.com/questions/39446024/vim-snippet-with-multiple-reference
 
 snippets are like the built-in :abbreviate on steroids, usually with parameter insertions, mirroring, and multiple stops inside them.
 
+want to `$this-` expand to `$this->` automatically
+sol 1. inoremap -
+sol 2. autocmd InsertCharPre
+I use this: php_this.vim. It will expand .. to $this-> and $. to $this-> as well.
+https://www.reddit.com/r/vim/comments/8789lw/immediately_trigger_an_abbreviation/
 
+fu Test()
+    call setline(1, getline("."))
+endf
+autocmd InsertCharPre * call Test()
+h TextChangedI 
+https://vi.stackexchange.com/questions/21458/error-with-simple-function-using-setline
 
+want to turn NEw to New automatically
+h CursorMovedI |" OP's solution
+sol 1. inoremap <Space> <C-o>:call CheckCase()<CR><Space>
+sol 2. autocmd InsertCharPre * if v:char =~ '\u' && getline('.') =~ '\v(\.\s+|^\s*)\u%' . col('.') . 'c' | let v:char = tolower(v:char) | endif
+https://vi.stackexchange.com/questions/7948/how-to-automatically-lower-case-the-second-letter-of-a-word
+
+https://vi.stackexchange.com/questions/8900/autocomplete-after-serveral-chars
+https://gist.github.com/maxboisvert/a63e96a67d0a83d71e9f49af73e71d93
+" Add this to your vimrc to get a minimalist autocomplete pop
+" Or use as a plugin : https://github.com/maxboisvert/vim-simple-complete
+..
+" Minimalist-TabComplete-Plugin
+inoremap <expr> <Tab> TabComplete()
+fun! TabComplete()
+    if getline('.')[col('.') - 2] =~ '\K' || pumvisible()
+        return "\<C-P>"
+    else
+        return "\<Tab>"
+    endif
+endfun
+..
+" Minimalist-AutoCompletePop-Plugin
+set completeopt=menu,menuone,noinsert
+inoremap <expr> <CR> pumvisible() ? "\<C-Y>" : "\<CR>"
+autocmd InsertCharPre * call AutoComplete()
+fun! AutoComplete()
+    if v:char =~ '\K'
+        \ && getline('.')[col('.') - 4] !~ '\K'
+        \ && getline('.')[col('.') - 3] =~ '\K'
+        \ && getline('.')[col('.') - 2] =~ '\K' " last char
+        \ && getline('.')[col('.') - 1] !~ '\K'
+        call feedkeys("\<C-P>", 'n')
+    end
+endfun
+
+The InsertCharPre event doesn't trigger for characters such as <Enter> or <Tab>.
+https://vi.stackexchange.com/questions/21991/call-a-function-after-insert-a-newline

@@ -36,6 +36,17 @@ func! buf#setline(bufnr, lines) abort
     call setbufline(a:bufnr, 1, a:lines)
 endfunc
 
+func! buf#curline(...) abort
+    let cnt = get(a:, 1, 1)
+    let start = line('.')
+    let last = line('$')
+    let stop = start + cnt - 1
+    if stop > last
+        let stop = last
+    endif
+    return getline(start, stop)
+endfunc " buf#curline
+
 func! buf#next_modified() abort
     let m = filter(getbufinfo(), 'v:val.changed == 1 && (getbufvar(v:val.bufnr, "&bt") != "terminal")')
     let m = map(m, 'v:val.bufnr')
@@ -99,3 +110,14 @@ nnoremap <F1> :<c-u>echo 33 <C-\>e<sid>GetName()<CR>
             " \:<c-u>call <sid>GetName()<cr>
             " \:<c-u>execute 'normal! a ' . g:username .
             " \ '. You have a very nice name.'<cr>
+
+" delfu buf#gmarkbuf
+func! buf#gmarkbuf(mark) " go mark
+    if a:mark =~# '^[a-z]$'
+        let gmark = toupper(a:mark)
+        let pos = getpos("'" . gmark)
+        if pos[0] > 0
+            exec 'b ' . pos[0]
+        endif
+    endif
+endfunc " buf#gmarkbuf

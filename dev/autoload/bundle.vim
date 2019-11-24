@@ -154,7 +154,7 @@ endfunc bundle#load
 
 func! s:load_plugins() abort
     for root in s:roots
-        if root == '' | let root = $HOME . "/.vim/bundle" | endif
+        if root == '' | let root = matchstr(&rtp,'^[^,]\+') . "/bundle" | endif
         let base = root . '/'
         let names = readdir(root, 'isdirectory(base . v:val)')
         let plugins = {}

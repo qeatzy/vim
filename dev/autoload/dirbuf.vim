@@ -1,13 +1,13 @@
 " .+,$s/\<dirbufcore#/dirbuf#/g
 " .+,$s/\<pathbuf#/dirbuf#/g
-if exists('*dirbuf#init')
-    finish
-endif
-func! dirbuf#init() abort
-endfunc " dirbuf#init
+" if exists('*dirbuf#init')
+"     finish
+" endif
+" func! dirbuf#init() abort
+" endfunc " dirbuf#init
 
-let g:dh_dirs = {}
-let g:rdh_dirs = {}
+let g:dh_dirs = get(g:, 'dh_dirs', {})
+let g:rdh_dirs = get(g:, 'rdh_dirs', {})
 
 func! dirbuf#goparent(cnt) abort
     let path = expand('%')
@@ -134,11 +134,14 @@ func! s:pathjoin(abspath, name)
     return name
 endfunc " s:pathjoin
 
-func! dirbuf#dh_enter() abort
+func! dirbuf#dh_enter(...) abort
     " only be called if ft=dirbuf
-    let abspath = get(g:rdh_dirs, bufnr('%'), '')
-    if abspath == '' | echom "dh_enter: not dirbuf buffer" | return | endif
-    let name = s:pathjoin(abspath, getline('.'))
+    " let abspath = get(g:rdh_dirs, bufnr('%'), '')
+    " if abspath == '' | echom "dh_enter: not dirbuf buffer" | return | endif
+    let abspath = get(b:, 'dirbuf')
+    if abspath is# 0 | echom "dh_enter: not dirbuf buffer" | return | endif
+    let name = s:pathjoin(abspath, var#getline(get(a:, 1)))
+    echo getline('.+2')
     if isdirectory(name)
         call dirbuf#openpath(name)
     else
@@ -155,10 +158,13 @@ endfunc " dirbuf#dh_enter
 "     -- dirvish takes time 1.18 - 1.44s, dirbuf takes time 0.28 - 0.45s
 
 func dirbuf#setup() abort
-    nn <buffer><silent> i :<C-u>call dirbuf#dh_enter()<CR>
+    nn <buffer><silent> i :<C-u>call dirbuf#dh_enter(v:count)<CR>
+    nn <buffer><silent> I :<C-u>call dirbuf#dh_enter(-v:count)<CR>
+    " so %
     nn <buffer> t :<C-u>call path#tree(b:dirbuf)<CR>:call dirbuf#openpath(expand('%'), {d -> d.tree})<CR>
     " nn <buffer> R :<C-u>call dirbuf#openpath(expand('%'), 'dir', 1)<CR>
     nn <buffer> R :<C-u>call dirbuf#openpath(expand('%'),{d -> d.df})<CR>
     nn <buffer> r :<C-u>call KeyPrefix_r()<CR>
     nn <buffer> p :<C-u>call path#info()<CR>
+    nn <buffer> E :<C-u>exec '!cygstart ' . b:dirbuf<CR><CR>
 endfunc

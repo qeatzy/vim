@@ -12,6 +12,9 @@ https://www.vim.org/scripts/script.php?script_id=2666
 "motion
 https://github.com/goldfeld/vim-seek
 
+"grepper
+https://github.com/dyng/ctrlsf.vim
+
 filter, use popup
 https://github.com/liuchengxu/vim-clap
 
@@ -25,3 +28,6 @@ https://github.com/vim-scripts/tComment
 
 
 https://github.com/tpope/vim-commentary
+
+https://github.com/tracyone/neomake-multiprocess
+    from comment by author https://www.v2ex.com/t/388940#r_4724927

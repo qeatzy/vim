@@ -1,3 +1,6 @@
+set history=10000
+
+cnoremap <C-k> <Up>
 cnoremap . <Up>
 nnoremap q; q:k
 nnoremap ; :

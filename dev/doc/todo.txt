@@ -167,5 +167,35 @@ ignore terminal buffer in ctrlp-buffer.
 
 2 rp to `put *` and add two empty line before that.
 
+" TODO
+" - surfingkeys go up one path
+" TODO
+" - explore undotree in vim
+
+expand a line in dirbuf buffer with its tree,
+
+mark a dirbuf, then go back to it.
+use mark D.
+nn 'd `D
+nn md mD
+use mark E, for currently editing file
+
+`ag pattern |vim -` then `set ft=dirbuf` to turn that buffer to dirbuf buffer.
+
+nnoremap <silent> [<space>  :<c-u>put!=repeat([''],v:count)<bar>']+1<cr>
+nnoremap <silent> ]<space>  :<c-u>put =repeat([''],v:count)<bar>'[-1<cr>
+https://vi.stackexchange.com/questions/3875/how-to-insert-a-newline-without-leaving-normal-mode
+
+h :n
+:n file
+
+3Ixxx
+insert xxx at current line and 2 lines below, at line beginning.
+how to implement.
+
+var#getf('name') to get func name, used by r+key etc. eg, r+<F8>.
+
+3rP to put before current line. just like 3rp.
+
 dev/doc/vim-operator.txt
 dev/doc/vim-edit.txt

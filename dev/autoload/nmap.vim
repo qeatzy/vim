@@ -18,7 +18,9 @@ endfunc
 
 func! nmap#yank_filename(...) abort
     let path = get(a:, 1, expand('%'))
-    let @" = path[0] == '/' ? path : fnamemodify(path, ':p')
+    let path = path[0] == '/' ? path : fnamemodify(path, ':p')
+    let path = path#convertpath(path, var#get('pathmode'))
+    let @" = path
     let @+ = @"
     let @* = @"
     return

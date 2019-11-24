@@ -1,0 +1,7 @@
+
+https://www.vim.org/download.php
+windows gvim version old, as 2019-11-23,  9.0M May 18  2018 gvim81.exe
+there is a custom build with newer patch.
+Yongwei's build (mentioned by above official download link)
+http://wyw.dcweb.cn/index.htm#download
+with only two file gvim.exe, vim.exe. just replace original one.

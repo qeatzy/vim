@@ -1,0 +1,38 @@
+
+term_getjob({buf})
+term_getstatus({buf})
+term_gettitle({buf})
+term_list()
+
+echo term_list()
+echo term_getstatus(23)
+
+call term_start('zsh',{'cwd':'..'})
+
+掌握嵌套使用terminal的快捷键和命令
+:: 切换 terminal normal mode
+:: go next window
+@@ 快捷键会被上层vim拦截，命令不会。
+在嵌套的vim里打开terminal时，设置不被上层监听的快捷键
+#1 alternative buffer
+#2 go terminal normal mode
+#3 customize 'termwinkey' to run command
+nn <C-l>
+h ^l
+
+fix dirbuf on gvim windows.
+@@ RO, error on change readonly buffer.
+@@ commit before rewrite dirbuf
+
+完成dirbuf里移动文件、重命名文件的方式
+#1 维护一个terminal buffer, 切换路径，然后在里面命令行操作。
+@@ 依赖与嵌套使用terminal
+
+dirbuf history
+#1 last mark global D
+#2 others go in a queue, view in a ctrlp-like fashion.
+
+每天，外界信息输入一个文件，内部ideas一个文件
+另外有整理和提取的方法，#1 集中式 #2 git+projects
+
+

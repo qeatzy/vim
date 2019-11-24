@@ -1,0 +1,4 @@
+https://stackoverflow.com/questions/8168320/can-vim-highlight-matching-html-tags-like-notepad
+plugin
+ MatchTag
+ MatchTagAlways

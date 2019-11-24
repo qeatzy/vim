@@ -3,6 +3,7 @@ if exists('*entry#init')
 endif
 func! entry#init() abort
 endfunc " entry#init
+    autocmd GUIEnter * runtime autoload/gvim.vim
 set nocp shortmess+=IF number relativenumber
 nn q :q<CR>
 nn gt <C-^>
@@ -118,7 +119,7 @@ let g:bundle_ignore += ['emmet-vim']
 " let g:bundle_ignore += ['vim-snippets']
 " }}}
 
-call bundle#init($HOME . "/.vim/vim")
+call bundle#init(matchstr(&rtp,'^[^,]\+') . "/vim")
 call bundle#start('')   " same as call bundle#init()  + call bundle#start()
 
 " call bundle#start()

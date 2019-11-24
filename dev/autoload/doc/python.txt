@@ -1,0 +1,5 @@
+
+%pydo return line.title()
+%pydo return line[::-1]
+https://www.v2ex.com/t/410079#reply9
+如何使用 Python 编写 vim 插件 - V2EX

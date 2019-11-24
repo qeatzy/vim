@@ -1,5 +1,8 @@
 :60vs to vertical split with width 60
     vs 60 not work, 60 will be filename.
 
+vert sb 22  |" vert split with buffer 22
+sb 22
+
 TODO? getwidth of current window.
 create a dedicated mode to resize window.

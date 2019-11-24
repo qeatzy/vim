@@ -66,6 +66,18 @@ func! path#simplify_abs(abspath) abort
     return abspath
 endfunc " path#simplify
 
+func! path#convertpath(abspath, mode)    " convert to windows style
+    let abspath = resolve(a:abspath)
+    if abspath[11] ==# '/' && abspath[:9] ==# '/cygdrive/'
+        if a:mode is# 'dos'
+            return abspath[10] . ':' . abspath[11:]
+        elseif a:mode is# 'uri'
+            return 'file:///' . abspath[10] . ':' . abspath[11:]
+        endif
+    endif
+    return a:abspath
+endfunc " path#convertpath
+
 " respect symlinks, on the contrary, getcwd() don't.
 let s:cwd = $PWD
 func! path#updatecwd(path) abort

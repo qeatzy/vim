@@ -1,12 +1,18 @@
 
+autocmd BufWritePost
+autocmd BufWritePost dev/autoload/buf.vim source %
+autocmd! BufWritePost
+autocmd BufWritePost dev/autoload/send.vim source %
+autocmd BufWritePost dev/autoload/ins.vim source %
+autocmd BufWritePost dev/autoload/io.vim source %
 autocmd BufWritePost dev/autoload/buf.vim source %
 autocmd BufWritePost dev/autoload/run.vim source %
 autocmd BufWritePost dev/autoload/edit.vim source %
 autocmd BufWritePost dev/autoload/path.vim source %
+autocmd BufWritePost dev/autoload/cmap.vim source %
 autocmd BufWritePost dev/autoload/buf.vim echo localtime()
 autocmd BufWritePost dev/autoload/buf.vim
 autocmd! BufWritePost dev/autoload/buf.vim
-autocmd BufWritePost
 
 autocmd BufWritePost dev/autoload/surround.vim source %
 fu surround#d

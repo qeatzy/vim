@@ -1,0 +1,8 @@
+
+clientserver needs X11 for working.
+https://vi.stackexchange.com/questions/13784/vim-not-starting-server
+https://vi.stackexchange.com/questions/5348/how-can-i-use-servername-and-remote-in-neovim
+
+https://www.reddit.com/r/vim/comments/2jz6p6/do_you_use_vim_as_a_server_or_as_a_single_instance/
+
+https://vi.stackexchange.com/questions/7966/what-are-practical-uses-of-the-client-server-mode

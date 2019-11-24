@@ -118,6 +118,7 @@ func! run#r(...) abort
         exec 'nn gh :<C-u>b ' . nr . '<CR>'
         call io#notify('')
     elseif ch ==# 'p'
+        if v:count | pu=repeat(\"\n\",v:count) | endif
         pu +    " no cygwin, + `:reg +` show reg *, `:pu +` use reg *
     elseif ch ==# 'd'   " || ch ==# 'c'
         call feedkeys('"_d')

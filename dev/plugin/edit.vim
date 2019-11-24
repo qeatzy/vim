@@ -19,6 +19,8 @@ ino jj <Esc>
 ino <C-e> <End>
 ino <C-f> <Right>
 ino <C-b> <Left>
+ino <C-j> <Down>
+ino <C-k> <Up>
 noremap! b <S-Left>|" <Alt-b> move word back        -- both insert and cmdline mode
 noremap! f <S-Right>|" <Alt-f> move word forward
 
@@ -44,6 +46,10 @@ nn \v :v//d_<CR>
 "cms
 nn g[ :Commentary<CR>|" accept count
 
+MapToggle \w wrap
+MapToggle ,w wrap
+nnoremap \d :g//d_<CR>
+nnoremap \v :v//d_<CR>
 
 "repeat
 nn . :<C-u>call edit#repeat(v:count1)<CR>|" fix repeat of cgn, and https://github.com/hauleth/sad.vim

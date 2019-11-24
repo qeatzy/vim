@@ -13,7 +13,12 @@ endif
 set nobackup swapfile undofile
 set undodir=~/.vim/.vimundo//
 set directory^=~/.vim/.vimswap//
-set directory=~/.vim/.vimswap//,~/tmp,/var/tmp,/tmp
+" -- below caused by lazy load of dev, not bug. (set dir in .vimrc fix it.)
+" cygwin 64, vim 8.1.1772, bug, always create .swp in current directory, for
+" empty file name, eg, 'vi' the first buffer is [No name]. others works
+" correctly. fixed by workaroud, ' vi -c "set dir=~/.vim/.vimswap//"'
+" or fixed by put 'set dir=~/.vim/.vimswap//' in .vimrc's last line.
+" set directory=~/.vim/.vimswap//,~/tmp,/var/tmp,/tmp
 " comma separated string, first usable one will be used. directory ending with '//' using full pathname.
 set ignorecase smartcase
 set nohlsearch incsearch
