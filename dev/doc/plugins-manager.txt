@@ -1,0 +1,10 @@
+
+https://github.com/Shougo/dein.vim
+⚡️ Dark powered Vim/Neovim plugin manager
+
+https://github.com/MarcWeber/vim-addon-manager
+manage and install vim plugins (including their dependencies) in a sane way.
+
+https://github.com/kana/vim-flavor
+|| https://relishapp.com/kana/vim-flavor/docs
+vim-flavor install

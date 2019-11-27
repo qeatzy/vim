@@ -13,12 +13,12 @@ func! dirbuf#goparent(cnt) abort
     let path = expand('%')
     if path == '' | let path = path#cwd() | endif
     let isdir = isdirectory(path)
-    if isdir && get(b:, 'dirbuf')[0] != '/'     " not loaded
+    if isdir && get(b:, 'dirbuf')[1] != ':'     " not loaded
             call dirbuf#openpath(path)
     else
             let g:lastpath = path
             let g:lastpath_isdir = isdir
-            call dirbuf#openpath(path#abspath(path . repeat('/..',a:cnt)))
+            call dirbuf#openpath(path#abspath(path . repeat('\..',a:cnt)))
     endif
 endfunc " dirbuf#goparent
 
@@ -110,17 +110,32 @@ func! s:cursor(abspath, files)
 endfunc " s:cursor
     
 
+let g:dbufs = get(g:, 'dbufs', [])
 func! s:addpath(abspath) abort
     let bufname = a:abspath
     let dh = get(g:dh_dirs, bufname)
     if dh is# 0
         let realpath = bufname == '/' ? '/' : resolve(a:abspath)
-        let nr = bufadd(bufname)
+        " if len(bufname) == 2 | let bufname .= '\' | endif
+        " culprit, in gvim, 'C:' is not a valid path, 'C:\' is.
+        " getftime('C:') return -1
+        " bufnr('C:') will return first bufnr under 'C:\'
+        " readdir('C:') works though
+        " windows gvim 8.1-2300 Yonghui build, bufadd() bug
+        " bufadd('C:') return bufnr of ('C:\Users'), bufnr() the same
+        " let nr = bufadd(bufname)
+        let nr = bufadd( len(bufname) > 2 ? bufname : bufname . '\')
+        call add(g:dbufs, [nr, bufname])
+        " let nr = bufadd('')
+        " exec 'b ' . nr
+        " exec 'file ' . bufname
+        " b #
         call setbufvar(nr, '&buftype', 'nofile')
         call setbufvar(nr, '&ft', 'dirbuf')
         call setbufvar(nr, 'dirbuf', bufname)
         call setbufvar(nr, '&buflisted', 0)
         sil call bufload(nr)    " no cost, removal cause bug
+        call setbufvar(nr, '&readonly', 0)
         let dh = {'bufnr': nr, 'realpath': realpath}
         let dh['viewtime'] = -1
         let g:dh_dirs[bufname] = dh
@@ -131,7 +146,8 @@ endfunc " s:addpath
 
 
 func! s:pathjoin(abspath, name)
-    let name = (a:abspath == '/' ? '' : a:abspath) . '/' . a:name
+    " let name = (a:abspath == '/' ? '' : a:abspath) . '/' . a:name
+    let name = a:abspath . '\' . a:name
     return name
 endfunc " s:pathjoin
 
@@ -169,3 +185,6 @@ func dirbuf#setup() abort
     nn <buffer> p :<C-u>call path#info()<CR>
     nn <buffer> E :<C-u>exec '!cygstart ' . b:dirbuf<CR><CR>
 endfunc
+
+func! dirbuf#x()
+endfunc " dirbuf#x

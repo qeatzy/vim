@@ -1,0 +1,4 @@
+guioptions+=!
+(Apr 17, 2018) https://github.com/neovim/neovim/issues/1496#issuecomment-381776705
+There is some desire to implement the equivalent for Vim’s guioptions+=!, but this time Bram managed to beat us and I am not sure whether somebody is working on that. @justinmk should know better.
+(nvim workaround) :tab te less %

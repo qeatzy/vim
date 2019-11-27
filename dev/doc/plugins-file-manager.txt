@@ -1,0 +1,6 @@
+https://github.com/Shougo/defx.nvim
+📁 The dark powered file explorer implementation
+Doesn't depend on denite.nvim
+Vim8/neovim compatible(nvim-yarp is needed for Vim8)
+Implemented by Python3
+

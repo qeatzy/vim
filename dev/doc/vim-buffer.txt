@@ -1,2 +1,7 @@
 echo bufadd('xx')
 you cannot have two buffer that has same name.
+
+
+(change buffer name without switch to it)
+no that is not possible – Christian Brabandt May 7 '18 at 7:36
+https://vi.stackexchange.com/questions/16163/change-the-name-of-a-buffer-in-the-background

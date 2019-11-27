@@ -1,4 +1,8 @@
 
+    autocmd TermOpen * setlocal bufhidden=hide
+https://vi.stackexchange.com/questions/19276/how-to-keep-the-neovim-terminal-buffer-in-the-buffer-list-even-after-it-being-hi
+
+
 term_getjob({buf})
 term_getstatus({buf})
 term_gettitle({buf})
@@ -23,6 +27,19 @@ h ^l
 fix dirbuf on gvim windows.
 @@ RO, error on change readonly buffer.
 @@ commit before rewrite dirbuf
+
+gvim
+load customized mapping, in after way, use GUIEnter event.
+:runtime autoload/gvim.vim
+:verb runtime autoload/gvim.vim
+h :runtime
+
+rc repo
+@1 freeze current rc repo to rc-old.
+@2 create new rc repo
+@3 git config,
+@4 basic bash/zsh config
+
 
 完成dirbuf里移动文件、重命名文件的方式
 #1 维护一个terminal buffer, 切换路径，然后在里面命令行操作。

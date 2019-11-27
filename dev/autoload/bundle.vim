@@ -152,14 +152,16 @@ func! bundle#load(name, ...) abort
     endif
 endfunc bundle#load
 
+let g:root = []
 func! s:load_plugins() abort
     for root in s:roots
-        if root == '' | let root = matchstr(&rtp,'^[^,]\+') . "/bundle" | endif
-        let base = root . '/'
-        let names = readdir(root, 'isdirectory(base . v:val)')
+        let root = root == '' ? $ROOT . 'bundle/' : root . '/'
+        call add(g:root, root)
+        "continue
+        let names = readdir(root, 'isdirectory(root . v:val)')
         let plugins = {}
         for name in names
-            let plugin = base . name
+            let plugin = root . name
             let after = plugin . '/after'
             let plugins[name] = [plugin, isdirectory(after) ? after : '']
         endfor
@@ -206,6 +208,10 @@ func! bundle#start(...) abort
     let s:roots += a:000
     call s:load_plugins()
 endfunc " bundle#start
+
+fu bundle#root()
+    return s:root
+endfu
 
 func! bundle#init(...) abort
     call add(s:roots, get(a:, 1, ''))

@@ -1,0 +1,4 @@
+
+https://stackoverflow.com/questions/594838/is-it-possible-to-get-gvim-to-remember-window-size
+
+https://www.rohanjain.in/yet-another-vim-productivity-post-server-client/

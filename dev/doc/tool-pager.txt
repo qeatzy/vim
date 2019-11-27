@@ -1,0 +1,12 @@
+  au StdinReadPost * echomsg "In pager mode!"
+ --cmd  "au StdinReadPost * set bt=nofile"
+https://stackoverflow.com/questions/39470081/vim-check-if-running-as-a-pager
+
+setup pager for 'git log'
+git config --global core.pager 'vim -c "sil keepp %sm/\e.\{-}m//ge" -c 1 -'
+git config --global core.pager 'vim -'
+https://stackoverflow.com/questions/16666009/how-do-i-use-vim-as-git-log-editor
+
+pager for git diff
+vim -c "%sm/\e.\{-}m//ge" -
+https://stackoverflow.com/questions/17013462/how-to-setup-coloured-git-diff-with-vim-as-a-pager

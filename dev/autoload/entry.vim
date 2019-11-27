@@ -5,6 +5,10 @@ func! entry#init() abort
 endfunc " entry#init
     autocmd GUIEnter * runtime autoload/gvim.vim
 set nocp shortmess+=IF number relativenumber
+let &rtp = substitute(&rtp,'\','/','g')
+let $ROOT = matchstr(&rtp, '^[^,]*') . '/'
+let $depth = $depth + 1
+set isfname=@,48-57,/,.,-,_,~
 nn q :q<CR>
 nn gt <C-^>
 
@@ -45,25 +49,30 @@ function! ShowCount(...)
     endtry
 endfunction
 
+set encoding=utf-8
+set fileencodings=ucs-bom,utf-8,gb2312,gb18030,gbk,cp936,big5,euc-jp,euc-kr,latin1
+"set fileencoding=utf-8|" not needed, local to buffer, cause buffer "[No Name]" changed
+
 set ruf=%120([%n]%-10.30f\ \ %y%=%-20(%l/%L\ %P%)%)
 set ls=2
-set statusline=
-set statusline+=%7*\[%n]                                  " buffernr
-set statusline+=%1*%-10.30f\                                " File+path
-set statusline+=%2*%<\ %y\                                  " FileType
-set statusline+=%3*\ %{''.(&fenc!=''?&fenc:&enc).''}      " Encoding
-set statusline+=%3*\ %{(&bomb?\",BOM\":\"\")}\            " Encoding2
-set statusline+=%4*\ %{(&ff==\"unix\"?\"\":&ff)}\                              " FileFormat (dos/unix..) 
-set statusline+=%8*\ %=\ %l/%L\ [%02p%%]  " Rownumber/total (%)
-set statusline+=%9*\ %03c\                            " Colnr
-set statusline+=%{LineCountCurrentParagraph()}
-set statusline+=%0*\ %{IsBuffersModified()}%r%w\ %P\                      " Modified? Readonly? Top/bot.
-set statusline^=%{ShowCount(999)}
+let stl = '%{ShowCount(999)}'
+let stl .= '%7*[%n]'                                  " buffernr
+let stl .= '%1*%-10.30f '                                " File+path
+let stl .= '%2*%< %y '                                  " FileType
+let stl .= "%3* %{''.(&fenc!=''?&fenc:&enc).''}"     " Encoding
+let stl .= '%3* %{(&bomb?",BOM":"")} '            " Encoding2
+let stl .= '%4* %{(&ff=="unix"?"":&ff)} '                              " FileFormat (dos/unix..) 
+let stl .= '%8* %= %l/%L [%02p%%]'  " Rownumber/total (%)
+let stl .= '%9* %03c '                           " Colnr
+let stl .= '%{LineCountCurrentParagraph()}'
+let stl .= '%0* %{IsBuffersModified()}%r%w %P '                      " Modified? Readonly? Top/bot.
+let &statusline=stl
 if version >= 700
     au InsertEnter * hi StatusLine term=reverse ctermbg=5 gui=undercurl guisp=Magenta
     au InsertLeave * hi StatusLine term=reverse ctermfg=0 ctermbg=2 gui=bold,reverse
 endif
 
+au StdinReadPost * set bt=nofile    " pager mode, 'shell-cmd | vim -'
 
 " to bootstrap
 " 1. copy or link this file to ~/.vim/autoload/entry.vim
@@ -84,6 +93,8 @@ let g:bundle_ignore = []
 	let g:loaded_netrw       = 1
 	let g:loaded_netrwPlugin = 1
 let g:bundle_ignore += ['\.git']
+let g:bundle_ignore += ['vim-easymotion']
+let g:bundle_ignore += ['indent-object.vim']
 let g:bundle_ignore += ['vim-dirvish']
 "let g:bundle_ignore += [['dev',0.2]]      " concat dev/plugin/*.vim to tmp/plugin/zz.vim see dev/doc/profile.txt
 let g:bundle_ignore += [['dev', [0.3,5.2]]]
@@ -119,7 +130,7 @@ let g:bundle_ignore += ['emmet-vim']
 " let g:bundle_ignore += ['vim-snippets']
 " }}}
 
-call bundle#init(matchstr(&rtp,'^[^,]\+') . "/vim")
+call bundle#init($ROOT . "vim")
 call bundle#start('')   " same as call bundle#init()  + call bundle#start()
 
 " call bundle#start()

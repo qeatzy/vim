@@ -2,7 +2,7 @@ if !exists('g:ndirs') | let g:ndirs = {} | endif
 func! s:add(realpath) abort
     let d = get(g:ndirs, a:realpath)
     if d is# 0 | let d = {'mtime': -1, 'realpath': a:realpath, 'base': a:realpath == '/' ? '/' : a:realpath . '/'} | let g:ndirs[a:realpath] = d | endif
-    let mtime = getftime(a:realpath)
+    let mtime = getftime(d.base)
     if mtime > d.mtime
         let base = d.base
         let dirs = []
@@ -37,13 +37,13 @@ func! path#upget(realpath) abort
 endfunc " path#get
 
 func! path#abspath(path) abort
-    return path#simplify_abs(a:path[0] == '/' ? a:path : path#cwd() . '/' . a:path)
+    return path#simplify_abs(a:path[1] == ':' ? a:path : path#cwd() . '\' . a:path)
 endfunc " path#abspath
 
 func! path#simplify_abs(abspath) abort
-    if a:abspath =~# '\%(/\|^\)\.\.\%(/\|$\)' " has /../
+    if a:abspath =~# '\%([\/]\|^\)\.\.\%([\/]\|$\)' " has ..
         let lst = []
-        let ns = split(a:abspath, '/')
+        let [driver, ns] = [a:abspath[:1], split(a:abspath[3:], '\')]
         for name in ns
             if name ==# '..'
                 if !empty(lst)
@@ -53,11 +53,12 @@ func! path#simplify_abs(abspath) abort
                 call add(lst, name)
             endif
         endfor
-        return '/' . join(lst, '/')
+        return empty(lst) ? driver : driver . '\' . join(lst, '\')
     else
-        " revome '//' and '/./' and trailing '/'
-        let abspath = substitute(a:abspath, '\%(/\|^\)\.\?\%(/\|$\)\@=', '', 'g')
-        return abspath !=# '' ? abspath : '/'
+        let abspath = substitute(a:abspath, '/', '\', 'g')
+        let abspath = substitute(abspath, '\%(\\\|^\)\.\?\%(\\\|$\)\@=', '', 'g')
+        " let abspath = substitute(a:abspath, '\%([\/]\|^\)\.\?\%([\/]\|$\)\@=', '', 'g')
+        return abspath
     endif
 endfunc " path#simplify
 
@@ -75,13 +76,10 @@ endfunc " path#convertpath
 
 " respect symlinks, on the contrary, getcwd() don't.
 let s:cwd = $PWD
-let g:cwd = get(g:, 'cwd', [$PWD])
 func! path#updatecwd(path) abort
 " autocmd DirChanged global call path#updatecwd(expand('<afile>'))
-" h win_execute|" do not trigger autocmd
-    call add(g:cwd, a:path)
     let g:a = a:path
-    let s:cwd = a:path[0] == '/' ? a:path : path#simplify_abs(s:cwd . '/' . a:path)
+    let s:cwd = a:path[0] == '\' ? a:path : path#simplify_abs(s:cwd . '\' . a:path)
 endfunc " path#updatecwd
 
 func! path#tree(path)
@@ -166,6 +164,7 @@ func! path#tree(path)
 endfunc " path#tree
 
 func! path#cwd() abort
+    return getcwd()
     return s:cwd
 endfunc " path#cwd
 
@@ -231,3 +230,7 @@ func! path#gd(d)
     " h sort(
     " echo getftime($PWD. '/dev')
 endfunc " path#gd
+
+func! path#x()
+    xx
+endfunc " path#x

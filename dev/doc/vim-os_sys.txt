@@ -1,0 +1,23 @@
+mkdir() create directory
+delete()    delte file & directory
+rename({from}, {to})
+		NOTE: If {to} exists it is overwritten without warning.
+getftype({fname})
+		"file" are returned.  On MS-Windows a symbolic link to a
+		directory returns "dir" instead of "link".
+pathshorten({expr})					*pathshorten()*
+			:echo pathshorten('~/.vim/autoload/myfile.vim')
+sha256({string})		String	SHA256 checksum of {string}
+wordcount()			Dict	get byte/char/word statistics
+C:\pkg\dt\gvim81\vim81\doc\eval.txt
+echo $VIMRUNTIME
+echo $VIMRUNTIME . '\doc\eval.txt'
+
+libcall({libname}, {funcname}, {argument})
+
+jumplist is local to window
+
+did_filetype()
+echo v:oldfiles
+4. Builtin Functions					*functions*
+See |function-list| for a list grouped by what the function is used for.

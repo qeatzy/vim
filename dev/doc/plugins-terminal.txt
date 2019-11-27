@@ -1,0 +1,8 @@
+
+https://github.com/Shougo/deol.nvim
+https://github.com/Shougo/deol.nvim/blob/master/doc/deol.txt
+	Note: deoplete + deoplete-zsh is recommended.
+	https://github.com/Shougo/deoplete.nvim
+	https://github.com/zchee/deoplete-zsh
+
+https://github.com/kassio/neoterm

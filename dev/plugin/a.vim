@@ -12,9 +12,9 @@ set nostartofline|" duplicate line remain same column
         set shortmess+=c    " Back at original" during autocompletion  https://github.com/Shougo/neocomplete.vim/issues/186
         set showcmd
 
-func! CmdAlias(lhs, rhs)
+func! CmdAlias(lhs, rhs, ...)
 " https://vi.stackexchange.com/questions/12872/how-to-make-command-line-abbreviations-that-only-trigger-at-begining-of-line
-exec 'cnorea <expr> ' . a:lhs . ' (getcmdtype() == ":" && getcmdline() =~ "^\s*'. a:lhs . '$")?"' . a:rhs . '":"' . a:lhs .'"'
+exec 'cnorea <expr> ' . a:lhs . ' (getcmdtype() ~=# get(a:,1,":") && getcmdline() =~ "^\s*'. a:lhs . '$")?"' . a:rhs . '":"' . a:lhs .'"'
 endfunc
 
 func! Capture(excmd) abort  " from tpope's scriptease.vim

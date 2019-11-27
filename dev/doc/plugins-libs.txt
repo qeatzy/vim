@@ -1,0 +1,5 @@
+https://github.com/LucHermitte
+https://github.com/Shougo
+
+has links to other libs
+https://github.com/LucHermitte/lh-vim-lib

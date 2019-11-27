@@ -1,0 +1,17 @@
+nvim fails as a pager (if without of open terminal buffer).
+Using Vim to View Git Commits | Sal Ferrarello
+https://salferrarello.com/using-vim-view-git-commits/
+https://github.com/neovim/neovim/issues/1496#issuecomment-63691483
+If you’re using Neovim, you’ll find that when you view a commit you can only see the end of the commit and you can not scroll back up. Instead you see the message “Press ENTER or type command to continue”.
+..
+This is due to how Neovim handles bang/system commands, as the author of Neovim, Thiago de Arruda, writes in this comment on Neovim Issue 1496
+..
+    This is not a bug, it is the new behavior of bang commands: We no longer spawn the program with it’s stdout connected to Nvim tty, instead we open a pipe, read output and display to the user. This is the only way the bang commands will be consistent across UIs, so programs designed to be used interactively from the terminal will no longer work from inside nvim. 
+git log --graph --pretty=format:'%h - %d %s (%cr) <%an>' | nvim -R -c 'set hidden nowrap keywordprg=:enew\ \|\ terminal\ \git\ --no-pager\ show | nnoremap q :bd!<cr>' -
+
+issue 1496
+open on Nov 20, 2014
+still open as of 2019-11-28
+
+https://github.com/neovim/neovim/issues/1496#issuecomment-555181129
+https://github.com/neovim/neovim/pull/10842

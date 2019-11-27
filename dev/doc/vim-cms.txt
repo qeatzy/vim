@@ -1,0 +1,10 @@
+@1 multi-line comment
+fu! s:cms()
+py << EOF
+content here
+EOF
+endfu
+
+@2 some command view " as start of comment, eg, :pu. (vi compatible)
+pu=split(&rtp, ",")
+pu=split(&rtp, ',')

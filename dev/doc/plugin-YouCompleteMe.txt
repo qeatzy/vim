@@ -1,0 +1,6 @@
+
+same completion for eg, [bibtex,latex] [rb,erb] [css,html]
+ issue on Feb 8, 2013 · 15 comments 
+ still open at 2019-11-28
+Disable per-filetype grouping of identifiers · Issue #78 · ycm-core/YouCompleteMe · GitHub
+https://github.com/ycm-core/YouCompleteMe/issues/78

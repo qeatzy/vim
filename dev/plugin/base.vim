@@ -11,8 +11,8 @@ endif
 
 
 set nobackup swapfile undofile
-set undodir=~/.vim/.vimundo//
-set directory^=~/.vim/.vimswap//
+set undodir^=$ROOT/.vimundo//
+set directory^=$ROOT/.vimswap//
 " -- below caused by lazy load of dev, not bug. (set dir in .vimrc fix it.)
 " cygwin 64, vim 8.1.1772, bug, always create .swp in current directory, for
 " empty file name, eg, 'vi' the first buffer is [No name]. others works
@@ -47,11 +47,6 @@ call CmdAlias('tmux', 'TMUX')
 
 MapToggle <F1> hlsearch
 cnoremap <expr> <F1> (getcmdtype() =~# '[/\?]')? OptToggle('hlsearch') : '<F1>'
-
-
-set encoding=utf-8
-set fileencodings=ucs-bom,utf-8,gb2312,gb18030,gbk,cp936,big5,euc-jp,euc-kr,latin1
-"set fileencoding=utf-8|" not needed, local to buffer, cause buffer "[No Name]" changed
 
 vnoremap <F2> :<c-u>exec join(getline("'<","'>"),"\n")<CR>
 nnoremap <silent> <F2> :<C-u> exec v:count1 == 1 ? getline('.') : join(getline('.',line('.')+(v:count1-1)), "\n") <CR>

@@ -1,0 +1,35 @@
+<C-w> c   close
+<C-w> o   only
+<C-w> s   split
+<C-w> v   vsplit
+<C-w> _   max height
+<C-w> |   max width
+<C-w> =   equal
+<C-w> n   new window with empty file
+<C-w> r   
+set equalalways?
+set equalalways
+set winfixheight?
+set winminheight=0
+<C-w> p   last accessed window
+<C-w> w below/right window
+<C-w> W above/left  window
+<C-w> t top-left window.
+<C-w> b bottom-right window.
+
+echo screenrow()
+echo winline()
+echo winheight(0) winwidth(0)
+echo &columns &lines &cmdheight &wiw &wi
+set equalalways?
+set noequalalways
+search window height in options.txt
+
+:60vs to vertical split with width 60
+    vs 60 not work, 60 will be filename.
+
+vert sb 22  |" vert split with buffer 22
+sb 22
+
+TODO? getwidth of current window.
+create a dedicated mode to resize window.

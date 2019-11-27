@@ -1,0 +1,1 @@
+    :echo globpath(&rtp, "syntax/c.vim")

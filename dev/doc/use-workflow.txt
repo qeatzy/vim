@@ -1,0 +1,6 @@
+
+:!cmd; do things; exit from cmd & go back to vim.
+https://github.com/neovim/neovim/issues/1496#issuecomment-381773443
+ Personally, I've always done !less % for getting a quick view of the current file for copy/paste in the terminal without disrupting my vim layout. This now is no longer possible (I'd now have do Ctrl-z, less <filename>, fg).
+:tab te less %
+https://github.com/neovim/neovim/issues/1496#issuecomment-381807185

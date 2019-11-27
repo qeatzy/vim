@@ -21,6 +21,15 @@ func! run#writelines(lines) abort
     return fn
 endfunc " run#writelines
 
+func! run#runvimL(cmd, ...)
+    if a:cmd !=# ''
+        let output = Capture(a:cmd)
+        if output !=# ''
+            pu= output
+        endif
+    endif
+endfunc " run#runvimL
+
 func! run#runbash(lno, cnt) abort
     let fn = run#writelines(getline(a:lno, a:lno + a:cnt - 1))
     exec '!bash ' . shellescape(fn)
