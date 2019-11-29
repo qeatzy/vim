@@ -16,8 +16,8 @@ endif
 let g:loaded_bundle = 1
 let s:debug = get(g:, 'debug', 0)
 
-" let bundle#action_list = {} 
 let s:action_list = {} 
+let s:default_action = get(g:, 'default_action', 0)  " default 0: norma load, -1: disable, 2000: 2s lazy
 
 func! s:config(lst)
     " echo 'len(a:lst) =' len(a:lst)
@@ -93,7 +93,7 @@ func! bundle#action(name, is_after) abort
     let names = keys(s:action_list)
     let idx = match(names, tolower(a:name))
     if idx == -1
-        let action = 0     " normal
+        let action = s:default_action     " normal
     else
         let action = s:action_list[names[idx]][a:is_after]
     endif
@@ -209,9 +209,9 @@ func! bundle#start(...) abort
     call s:load_plugins()
 endfunc " bundle#start
 
-fu bundle#root()
-    return s:root
-endfu
+func! bundle#root()
+    return s:roots
+endfunc " bundle#root
 
 func! bundle#init(...) abort
     call add(s:roots, get(a:, 1, ''))

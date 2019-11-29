@@ -1,0 +1,5 @@
+
+http://vim.1045645.n5.nabble.com/How-to-catch-interrupts-when-block-in-input-td1184250.html
+    try
+    catch /^Vim:Interrupt$/ 
+    endtry

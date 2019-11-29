@@ -1,1 +1,5 @@
     :echo globpath(&rtp, "syntax/c.vim")
+    :echo globpath(&rtp, "plugin/a.vim")
+  let rtp = matchstr(&rtp, ',\zs.*')
+ echo globpath(rtp, 'autoload/entry.vim')
+ echo globpath(rtp, '*/dirbuf.vim', '', 1)

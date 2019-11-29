@@ -15,3 +15,5 @@ still open as of 2019-11-28
 
 https://github.com/neovim/neovim/issues/1496#issuecomment-555181129
 https://github.com/neovim/neovim/pull/10842
+
+thx to nvim, vim's development is largely boosted on 2016 to 2019.

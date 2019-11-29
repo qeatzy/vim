@@ -21,9 +21,13 @@ func! run#writelines(lines) abort
     return fn
 endfunc " run#writelines
 
+" fu run#runvimL
+        " breakdel *
+        " breakadd func 3 run#runvimL
 func! run#runvimL(cmd, ...)
     if a:cmd !=# ''
-        let output = Capture(a:cmd)
+        let cmd = split(a:cmd,'')
+        let output = Capture(cmd)
         if output !=# ''
             pu= output
         endif
@@ -37,11 +41,8 @@ endfunc " run#runbash
 
 func! run#capturebash(lno, cnt) abort
     let cmd = getline(a:lno, a:lno + a:cnt - 1)
-    let fn = run#writelines(cmd)
-    " let [shell, shellcmdflag] = [&shell, &shellcmdflag]
     " let [&shell, &shellcmdflag] = ['bash', '']
-    " exec '!bash ' . shellescape(fn)
-    let output = systemlist(shellescape(fn))
+    let output = systemlist('bash', cmd)
     let nr = buf#nextscratch()
     call setbufvar(nr, 'runcmd', cmd[0] . (len(cmd)>1 ? " (" . len(cmd) . ")" : ""))
     call buf#setline(nr, output)
@@ -142,3 +143,8 @@ func! run#r(...) abort
         call feedkeys('r' . ch, 'n')
     endif
 endfunc " run#r
+
+call CmdAlias('nnv', 'verb nn', ':@')
+call CmdAlias('nv', 'verb nn', ':@')
+call CmdAlias('setv', 'verb set', ':@')
+call CmdAlias('c.', 'cd %:p:h', ':@')

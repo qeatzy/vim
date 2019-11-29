@@ -5,6 +5,7 @@ nn ql :<C-u>call dirbuf#openpath('.')<CR>
 " nn gh :<C-u>call bbuf#openbuffers()<CR>
 nn gh :<C-u>call io#fuzzyfiles()<CR>
 nn 'd :<C-u>call buf#gmarkbuf('d')<CR>
+nn 's :<C-u>call buf#gmarkbuf('s')<CR>
 nn md mD
 
 func! s:lazy_dirbuf_pwd(timer) abort

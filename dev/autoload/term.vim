@@ -9,8 +9,34 @@ func! term#nrs(cmd)
     return nrs
 endfunc " term#nrs
 
+func! s:parse_pid(msg) " return value of term_getjob(), all arg1 of job-exit_cb
+    return matchstr(a:msg, '^\%(process \)\zs\d\+')
+endfunc " s:parse_pid
+
+if !exists('s:term_pids') | let s:term_pids = {} | endif
+func! term#pid_add(bufnr, pid)
+    let s:term_pids[a:pid] = a:bufnr
+endfunc " term#pid_add
+func! term#pid2bufnr(pid)
+    return s:term_pids[a:pid]
+endfunc " term#pid2bufnr
+func! s:Cb_exit_cb(job, exit_code)
+    let pid = s:parse_pid(a:job)
+    let bufnr = term#pid2bufnr(pid)
+    call term#remove(bufnr)
+    let g:ee = get(g:,'ee',[])
+    call add(g:ee, [a:job,a:exit_code])
+endfunc " EE
+
 func! term#add(bufnr, afile) abort
     echom "term#add(" . a:bufnr . ", " . a:afile . ")"
+    let cmd = matchstr(matchstr(a:afile, '\%(\%(.*[\/]\|^\)!\?\)\zs.\{-1,}\%(\%( (\d\+)\)\|$\)\@='), '\%(.*[\/]\|^\)\zs.\{-1,}\%(\%(.exe\)\|$\)\@=')
+    let nrs = term#nrs(cmd)
+    let bufnr = str2nr(a:bufnr)
+    call add(nrs, bufnr)
+    let s:rterm_nrs[bufnr] = nrs
+    let pid = s:parse_pid(term_getjob(bufnr))
+    call term#pid_add(bufnr, pid)
     " let g:s = a:afile
     " let cmd = substitute(a:afile, ' \%((\d\+)\)\?$', '','')[1:]
     " echom 'call add(s:term_nrs, a:bufnr)' a:bufnr
@@ -20,11 +46,6 @@ func! term#add(bufnr, afile) abort
     " echo matchstr(s, '\%\(.*[\/]\|^\)\zs.*')
     " echo matchstr(s, '\%(.*[\/]\|^\)\zs.\{-\}\%(\%(\.exe\) [()0-9]\+\)\@=')
     " trim ' (1)', then trim '.exe'
-    let cmd = matchstr(matchstr(a:afile, '\%(\%(.*[\/]\|^\)!\?\)\zs.\{-1,}\%(\%( (\d\+)\)\|$\)\@='), '\%(.*[\/]\|^\)\zs.\{-1,}\%(\%(.exe\)\|$\)\@=')
-    let nrs = term#nrs(cmd)
-    let bufnr = str2nr(a:bufnr)
-    call add(nrs, bufnr)
-    let s:rterm_nrs[bufnr] = nrs
 endfunc " term#add
 
 func! term#all() abort
@@ -139,23 +160,24 @@ func! term#switch(nth) abort
         let g:toswitch = g:lastswitch
     elseif a:nth is# 'c'
         let cmd = get(g:, 'term', 'zsh')
-        let nr = term_start(cmd)
+        let nr = term_start(cmd, {'exit_cb':function('s:Cb_exit_cb')})
         call term#add(nr, cmd)
     else
+        let idx = index(nrs, bufnr('%'))
         if a:nth is# 'n'
             if &bt !=# 'terminal'
                 let g:toswitch = nrs[0]
             else
-                let idx = index(nrs, bufnr('%'))
                 let g:toswitch = idx+1 == len(nrs) ? g:lastbufnr : nrs[idx+1]
             endif
         elseif a:nth is# 'p'
             if &bt !=# 'terminal'
                 let g:toswitch = nrs[-1]
             else
-                let idx = index(nrs, bufnr('%'))
                 let g:toswitch = idx == 0 ? g:lastbufnr : nrs[idx-1]
             endif
+        elseif a:nth is# 'l'
+            echo idx == -1 ? 0 : printf("[%d of %d]", idx + 1, len(nrs))
         endif
     endif
     if g:toswitch

@@ -14,18 +14,20 @@ set nostartofline|" duplicate line remain same column
 
 func! CmdAlias(lhs, rhs, ...)
 " https://vi.stackexchange.com/questions/12872/how-to-make-command-line-abbreviations-that-only-trigger-at-begining-of-line
-exec 'cnorea <expr> ' . a:lhs . ' (getcmdtype() ~=# get(a:,1,":") && getcmdline() =~ "^\s*'. a:lhs . '$")?"' . a:rhs . '":"' . a:lhs .'"'
+exec 'cnorea <expr> ' . a:lhs . ' ("' . get(a:,1,":") . '" =~# getcmdtype() && getcmdline() =~ "^\s*'. a:lhs . '$") ? "' . a:rhs . '" : "' . a:lhs .'"'
 endfunc
 
-func! Capture(excmd) abort  " from tpope's scriptease.vim
-  try
-    redir => out
-    exe 'silent! '.a:excmd
-    " silent 'exe! '.a:excmd
-  finally
-    redir END
-  endtry
-  return out
+func! Capture(excmd) abort  " inspired by tpope's scriptease.vim
+    let excmd = type(a:excmd) !=# 3 ? [a:excmd] : a:excmd
+    try
+        redir => out
+        for cmd in excmd
+            exe 'silent! ' . cmd
+        endfor
+    finally
+        redir END
+    endtry
+    return out
 endfunc
 
 function! MapToggle(key, opt)

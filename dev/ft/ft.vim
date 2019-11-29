@@ -1,5 +1,8 @@
 " you may not need filetype on
 
+" reload setting for all *.vim buffer
+    " bufdo! if expand('%') =~ '\.vim$' | call ft_vim#init() |endif
+
 func! ft#load(ft)
     if has_key(s:ft, a:ft)
         return
@@ -8,7 +11,6 @@ func! ft#load(ft)
     let $FT = a:ft
     runtime ft/ft_$FT.vim   " need bootstrap itself
 endfunc " ft#load
-
 autocmd FileType * call ft#load(expand('<amatch>'))
 
 if !exists('g:ft_ft')

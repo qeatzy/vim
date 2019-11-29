@@ -1,4 +1,10 @@
 
+h term_start(
+..
+h job-exit_cb
+"exit_cb": handler	Callback for when the job ends.  The arguments are the
+			job and the exit status.
+
     autocmd TermOpen * setlocal bufhidden=hide
 https://vi.stackexchange.com/questions/19276/how-to-keep-the-neovim-terminal-buffer-in-the-buffer-list-even-after-it-being-hi
 

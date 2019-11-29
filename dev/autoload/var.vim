@@ -19,3 +19,10 @@ func! var#getline(count)
     endif
     return getline(nr)
 endfunc " var#cline
+
+func! var#idxinc(idx, step, length)
+    let idx = a:idx + a:step
+    let idx = idx >= 0 ? idx : (idx + (a:length-1-idx) / a:length * a:length)
+    let idx = idx < a:length ? idx : idx % a:length
+    return idx
+endfunc " var#idxinc

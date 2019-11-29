@@ -18,7 +18,7 @@ func! gvim#after(...)
 
 nnoremap <M-x> :<C-u>call run#GetInputCommandThenCaptureAndPut()<CR>
 " inoremap <M-x> <Esc>:<C-u>call run#GetInputCommandThenCaptureAndPut()<CR>
-nnoremap <M-c> :<C-u>pu= C(input(':'))<CR>
+" nnoremap <M-c> :<C-u>pu= C(input(':'))<CR>
 
 au filetype dirbuf nn <buffer> E :exec '!start explorer ' . b:dirbuf<CR><CR>
 

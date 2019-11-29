@@ -7,11 +7,33 @@
 "                             but ipython + term_sendkeys multiple lines still not work.
 "                             though python + term_sendkeys multiple lines works. (no tmux)
 
+func! s:isTermDirty_python(prompt)
+    return a:prompt ==# '>>> ' ? 0 : 1 + a:prompt[0] ==# '>' 
+    " if lastline !=# '>>> '
+    "     call term_sendkeys(a:bufnr, "\r")
+    "     if lastline[0] ==# '>' | return '' | endif
+    " endif
+endfunc " s:isTermDirty_python
+
+func! s:isTermDirty_zsh(prompt)
+endfunc " s:isTermDirty_zsh
+
+let s:Cb_isTermDirty = {'': {prompt -> prompt is# ''},
+        \ 'python': function('s:isTermDirty_python'),
+        \ 'zsh': function('s:isTermDirty_zsh'),
+        \ }
+func! s:Cb_isTermDirty(prompt)
+    let Callback = get(s:Cb_isTermDirty, b:pyinter)
+    if Callback is# 0 | let Callback = s:Cb_isTermDirty[''] | endif
+    return Callback(a:prompt)
+endfunc " s:Cb_isTermDirty = {'': {cmd -> cmd is# ''}}
+let x = getbufline(38,'$')[0]
+echo x[-2:]
+
 func! send#termi_python_line(bufnr, ...)
 " let [g:a,g:b] = [col('.'), col('$')]
     " if a:0 | call feedkeys(a:1, 'n') | endif
-    let char = "\<CR>"
-    if a:0 | let char = a:1 . char | endif
+    let char = a:0 ? a:1 . "\<CR>" : "\<CR>" 
     let ncol = col('$')
     if !a:0 && col('.') < ncol
         return char
@@ -19,10 +41,10 @@ func! send#termi_python_line(bufnr, ...)
     " if ncol == 1
     if ncol - 1 == indent('.')
         " if len(getbufline(a:bufnr, '$')[0]) == 4   " '>>> '
-        let lastline = getbufline(a:bufnr, '$')[0]
-        if lastline !=# '>>> '
+        let prompt = getbufline(a:bufnr, '$')[0]
+        let code = s:Cb_isTermDirty(prompt)
+        if code
             call term_sendkeys(a:bufnr, "\r")
-            if lastline[0] ==# '>' | return '' | endif
         endif
     else
         call term_sendkeys(a:bufnr, getline('.') . "\r")
@@ -46,9 +68,7 @@ func! send#term_lines(bufnr, lines)
     " h join(
 endfunc " send#term_lines
 
-" au filetype pyinter call send#pyinter()
-func! send#pyinter(...)
-    let b:pyinter = a:0 ? a:1 : 'python3'
+func! send#init()
 augroup pyinter
     autocmd!
     inoremap <silent> <buffer> <expr> <CR> send#termi_python_line(term#bufnr(b:pyinter))
@@ -68,5 +88,11 @@ augroup pyinter
     " usage, i: <C-o><C-j> to send current line, without move cursor
     " <C-d> key to send any key.
 augroup END " pyinter
-return ''
+endfunc " send#init
+
+" au filetype pyinter call send#pyinter()
+func! send#pyinter(...)
+    let b:pyinter = a:0 ? a:1 : 'python3'
+    call send#init()
+    return ''
 endfunc " send#pyinter

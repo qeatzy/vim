@@ -3,6 +3,8 @@
 
 " au FileType * let $FT= expand('<amatch>') | runtime ft/ft_$FT.vim
 au FileType * ++once let $FT= expand('<amatch>') | runtime ft/ft.vim
+runtime ft/terminal.vim
+" au TerminalOpen * ++once let $TERMNR = expand('<abuf>') | runtime ft/terminal.vim
 " au FileType * ++once call ft#init(expand('<amatch>'))
 nnoremap \g :e!<CR>
 
@@ -42,34 +44,6 @@ func! Buffer_left_0_right_1(cnt, is_right)
 endfunc
 nnoremap <Space>h :<c-u>call Buffer_left_0_right_1(v:count1, 0)<CR>
 nnoremap <Space>l :<c-u>call Buffer_left_0_right_1(v:count1, 1)<CR>
-
-"terminal
-nn <silent> d :<C-u>call term#switch(term#switchnr())<CR>
-tno <silent> d <C-L>:call term#switch(term#switchnr())<CR>
-nn <silent> <A-d> :<C-u>call term#switch(term#switchnr_gui())<CR>
-tno <silent> <A-d> <C-L>:call term#switch(term#switchnr_gui())<CR>
-if $VIM_TERMINAL is# ''
-augroup terminal
-    autocmd!
-    " bug: TerminalOpen not fire
-    autocmd TerminalOpen * setlocal laststatus=1 nonumber norelativenumber termwinkey=<C-L>
-    autocmd TerminalOpen * nn <buffer> go <C-L><C-w>
-    " autocmd TerminalOpen * call term#add(expand('<abuf>'), expand('<afile>'))
-    autocmd BufEnter * if getbufvar(expand('<abuf'), '&bt') == 'terminal' | set laststatus=1 | endif
-    autocmd BufLeave * if getbufvar(expand('<abuf'), '&bt') == 'terminal' | set laststatus=2 | endif
-    " autocmd BufEnter * echom 'BufEnter' expand('<amatch>') expand('<abuf>') expand('<afile>')
-    " autocmd BufLeave \!* echom 'BufLeave' expand('<amatch>') expand('<abuf>') expand('<afile>')
-    " autocmd TerminalOpen *    echom "TerminalOpen" expand('<amatch>') expand('<abuf>') expand('<afile>')
-augroup END " terminal
-tnoremap jj <C-w>N
-nnoremap <silent> gm :<C-u>call term#switch_to_term_buffer(v:count)<CR>
-nnoremap <silent> <C-z> :<C-u>call term#switch_to_term_buffer(v:count)<CR>
-inoremap <silent> <C-z> <C-o>:call term#switch_to_term_buffer(v:count)<CR>
-" tnoremap <silent> <C-^> <C-w>:b #<CR>
-tnoremap <silent> <C-^> <C-L>:<C-u>call term#switch_to_term_buffer('cycle')<CR>
-tnoremap go <C-L><C-w>|" cause problem when paste, eg, https://github.com/goldfeld/vim-seek
-tnoremap qo <C-L><C-o>
-endif   " if $VIM_TERMINAL is# ''
 
 "tab page
 nn t :<C-u>call buf#tab(v:count)<CR>
