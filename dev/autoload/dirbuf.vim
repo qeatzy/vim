@@ -120,6 +120,7 @@ func! s:addpath(abspath) abort
         call setbufvar(nr, '&ft', 'dirbuf')
         call setbufvar(nr, 'dirbuf', bufname)
         call setbufvar(nr, '&buflisted', 0)
+        call setbufvar(nr, '&swapfile', 0)
         sil call bufload(nr)    " no cost, removal cause bug
         let dh = {'bufnr': nr, 'realpath': realpath}
         let dh['viewtime'] = -1

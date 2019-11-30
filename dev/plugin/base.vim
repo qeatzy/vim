@@ -10,9 +10,7 @@ if !exists('g:os')     " -- allow overridding
 endif
 
 
-set nobackup swapfile undofile
-set undodir^=$ROOT/.vimundo//
-set directory^=$ROOT/.vimswap//
+" set directory^=$ROOT/.vimswap//|" move to entry.vim to avoid .swp
 " -- below caused by lazy load of dev, not bug. (set dir in .vimrc fix it.)
 " cygwin 64, vim 8.1.1772, bug, always create .swp in current directory, for
 " empty file name, eg, 'vi' the first buffer is [No name]. others works

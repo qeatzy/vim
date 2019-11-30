@@ -15,7 +15,10 @@ set isfname=@,48-57,/,.,-,_,~,$
 nn q :q<CR>
 nn gt <C-^>
 set tabstop=4       |" Number of spaces that a <Tab> in the file counts for. eg, used for print.
-au BufEnter * ++once if isdirectory(bufname('%')) | so $ROOT/vim/dev/autoload/path.vim | so $ROOT/vim/dev/autoload/dirbuf.vim | call dirbuf#openpath(bufname('%')) | call dirbuf#setup() | endif
+set nobackup swapfile undofile
+set undodir^=$ROOT/.vimundo//
+set directory^=$ROOT/.vimswap//
+au BufEnter * ++once if isdirectory(bufname('%')) | so $ROOT/vim/dev/autoload/path.vim | so $ROOT/vim/dev/autoload/dirbuf.vim | setlocal noswapfile | call dirbuf#openpath(bufname('%')) | call dirbuf#setup() | endif
 
 " [+] if only current modified, [+3] if 3 modified including current buffer.
 " [3] if 3 modified and current not, "" if none modified.
