@@ -1,7 +1,7 @@
 " imap only & both, for cmap only see cmap.vim
 
 "indent-option, see " fmt
-set tabstop=4       |" Number of spaces that a <Tab> in the file counts for. eg, used for print.
+" move tabstop to entry.vim, to minimize visual change
 set shiftwidth=4    |" used by '=' and '<' '>' to format indent.
 set softtabstop=4   |" used by <BS> in insert mode, and <Tab> for insert tab. If 'smarttab' is on, shiftwidth is used instead.
 " set smarttab        |" default off. if on use shiftwidth for <BS>, if off use softtabstop.

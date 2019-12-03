@@ -28,25 +28,6 @@ func! buf#nextscratch() abort
 endfunc
 
 
-func! buf#setline(bufnr, lines) abort
-    let num = len(a:lines) + 1
-    if !empty(getbufline(a:bufnr, num, num))
-        call deletebufline(a:bufnr, num, '$')
-    endif
-    call setbufline(a:bufnr, 1, a:lines)
-endfunc
-
-func! buf#curline(...) abort
-    let cnt = get(a:, 1, 1)
-    let start = line('.')
-    let last = line('$')
-    let stop = start + cnt - 1
-    if stop > last
-        let stop = last
-    endif
-    return getline(start, stop)
-endfunc " buf#curline
-
 func! buf#next_modified() abort
     let m = filter(getbufinfo(), 'v:val.changed == 1 && (getbufvar(v:val.bufnr, "&bt") != "terminal")')
     let m = map(m, 'v:val.bufnr')

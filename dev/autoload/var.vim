@@ -10,6 +10,25 @@ func! var#get(name)
     return x
 endfunc " var#get
 
+func! var#setline(bufnr, lines) abort
+    let num = len(a:lines) + 1
+    if !empty(getbufline(a:bufnr, num, num))
+        call deletebufline(a:bufnr, num, '$')
+    endif
+    call setbufline(a:bufnr, 1, a:lines)
+endfunc
+
+func! var#curline(...) abort
+    let cnt = get(a:, 1, 1)
+    let start = line('.')
+    let last = line('$')
+    let stop = start + cnt - 1
+    if stop > last
+        let stop = last
+    endif
+    return getline(start, stop)
+endfunc " buf#curline
+
 func! var#getline(count)
     " return line count lines below
     let [line, linenr] = [line('.'), line('$')]

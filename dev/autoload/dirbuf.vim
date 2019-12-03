@@ -1,10 +1,5 @@
-" .+,$s/\<dirbufcore#/dirbuf#/g
-" .+,$s/\<pathbuf#/dirbuf#/g
-" if exists('*dirbuf#init')
-"     finish
-" endif
-" func! dirbuf#init() abort
-" endfunc " dirbuf#init
+if exists('g:loaded_dirbuf') | finish | endif
+let g:loaded_dirbuf = 1
 
 let g:dh_dirs = get(g:, 'dh_dirs', {})
 let g:rdh_dirs = get(g:, 'rdh_dirs', {})
@@ -13,13 +8,11 @@ func! dirbuf#goparent(cnt) abort
     let path = expand('%')
     if path == '' | let path = path#cwd() | endif
     let isdir = isdirectory(path)
-    if isdir && get(b:, 'dirbuf')[0] != '/'     " not loaded
-            call dirbuf#openpath(path)
-    else
-            let g:lastpath = path
-            let g:lastpath_isdir = isdir
-            call dirbuf#openpath(path#abspath(path . repeat('/..',a:cnt)))
+    if isdir
+        let g:lastpath = path
+        let g:lastpath_isdir = isdir
     endif
+    call dirbuf#openpath(path#abspath(path . repeat('/..',a:cnt)))
 endfunc " dirbuf#goparent
 
 fun! KeyPrefix_r() abort
@@ -76,9 +69,9 @@ func! dirbuf#openpath(path, ...) abort
     endif
     if get(a:, 2, 1)
         exec 'b ' . dh.bufnr
+        if !exists('files') | let files = getline(1,'$') | endif
+        call s:cursor(abspath, files)
     endif
-    if !exists('files') | let files = getline(1,'$') | endif
-    call s:cursor(abspath, files)
 endfunc " dirbuf#openpath
 
 let g:lastpath = get(g:, 'lastpath', '')
@@ -114,7 +107,7 @@ func! s:addpath(abspath) abort
     let bufname = a:abspath
     let dh = get(g:dh_dirs, bufname)
     if dh is# 0
-        let realpath = bufname == '/' ? '/' : resolve(a:abspath)
+        let realpath = path#realpath(a:abspath)
         let nr = bufadd(bufname)
         call setbufvar(nr, '&buftype', 'nofile')
         call setbufvar(nr, '&ft', 'dirbuf')
@@ -159,7 +152,7 @@ endfunc " dirbuf#dh_enter
 "     first time open
 "     -- dirvish takes time 1.18 - 1.44s, dirbuf takes time 0.28 - 0.45s
 
-func dirbuf#setup() abort
+func! dirbuf#setup() abort
     nn <buffer><silent> i :<C-u>call dirbuf#dh_enter(v:count)<CR>
     nn <buffer><silent> I :<C-u>call dirbuf#dh_enter(-v:count)<CR>
     " so %
@@ -170,3 +163,4 @@ func dirbuf#setup() abort
     nn <buffer> p :<C-u>call path#info()<CR>
     nn <buffer> E :<C-u>exec '!cygstart ' . b:dirbuf<CR><CR>
 endfunc
+

@@ -37,4 +37,17 @@ function! MapToggle(key, opt)
 endfunction
 command! -nargs=+ MapToggle call MapToggle(<f-args>)
 
+" callback is a funcref or function name
+func! SetOpfunc(callback) abort
+    func! RangeCallFunc(type, ...) abort closure
+        let lines = op#line(a:type)
+        call call(a:callback, lines)
+        norm! g`o
+    endfunc
+    norm! mo
+    set opfunc=RangeCallFunc
+    " return 'g@'
+endfunc
+
+
 onoremap if :<C-U>normal! ggVG<CR>

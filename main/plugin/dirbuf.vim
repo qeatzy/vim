@@ -9,7 +9,7 @@ nn 's :<C-u>call buf#gmarkbuf('s')<CR>
 nn md mD
 
 func! s:lazy_dirbuf_pwd(timer) abort
-    call dirbuf#openpath($PWD)
+    call dirbuf#openpath($PWD,0,0)
 endfunc
 let Lazy_dirbuf_pwd = funcref('s:lazy_dirbuf_pwd')
 
@@ -17,7 +17,8 @@ augroup dirbuf
     autocmd!
     " autocmd BufNew * if isdirectory(expand('<amatch>')) | call dirbuf#openpath(expand('<amatch>'), 'dir', 0) | endif
     " autocmd BufNew * if isdirectory(expand('<amatch>')) && getbufvar(expand('<abuf>'),'dirbuf') isnot# 0 | call dirbuf#openpath(expand('<amatch>')) | endif
-    autocmd VimEnter * call timer_start(200, Lazy_dirbuf_pwd)
+    " autocmd VimEnter * call timer_start(200, Lazy_dirbuf_pwd)
+    autocmd VimEnter * let g:timer = timer_start(200, Lazy_dirbuf_pwd)
     autocmd BufLeave * if &ft ==# 'dirbuf' | exec 'norm! mD' | endif
     " autocmd BufNewFile *    echom "BufNewFile" expand('<amatch>')
     " autocmd BufNew *    echom "BufNew" expand('<amatch>') expand('<abuf>') expand('<afile>')
@@ -31,9 +32,9 @@ augroup dirbuf
     " autocmd BufAdd *    echom "BufAdd" expand('<amatch>') expand('<abuf>') expand('<afile>')
 augroup END " dirbuf
 
-augroup ft
-    autocmd!
-    autocmd filetype dirbuf call dirbuf#setup()
-    autocmd filetype bbuf call bbuf#setup()
-    autocmd filetype runcmd call run#setup()
-augroup END " ft
+" augroup ft
+"     autocmd!
+"     autocmd filetype dirbuf call dirbuf#setup()
+"     autocmd filetype bbuf call bbuf#setup()
+"     autocmd filetype runcmd call run#setup()
+" augroup END " ft

@@ -45,7 +45,7 @@ func! run#capturebash(lno, cnt) abort
     let output = systemlist('bash', cmd)
     let nr = buf#nextscratch()
     call setbufvar(nr, 'runcmd', cmd[0] . (len(cmd)>1 ? " (" . len(cmd) . ")" : ""))
-    call buf#setline(nr, output)
+    call var#setline(nr, output)
     exec nr . 'b'
     " let g:o=output
     " let [&shell, &shellcmdflag] = [shell, shellcmdflag]
@@ -148,3 +148,4 @@ call CmdAlias('nnv', 'verb nn', ':@')
 call CmdAlias('nv', 'verb nn', ':@')
 call CmdAlias('setv', 'verb set', ':@')
 call CmdAlias('c.', 'cd %:p:h', ':@')
+call CmdAlias('de', 'debug', ':@')

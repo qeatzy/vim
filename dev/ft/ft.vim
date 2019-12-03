@@ -11,7 +11,13 @@ func! ft#load(ft)
     let $FT = a:ft
     runtime ft/ft_$FT.vim   " need bootstrap itself
 endfunc " ft#load
-autocmd FileType * call ft#load(expand('<amatch>'))
+augroup ft_init
+    autocmd!
+    autocmd FileType * call ft#load(expand('<amatch>'))
+augroup END " ft_init
+augroup ft
+    autocmd!
+augroup END " ft
 
 if !exists('g:ft_ft')
     let s:ft = {}
@@ -25,6 +31,10 @@ endif
 func! ft#all()
     return s:ft
 endfunc " ft#all
+
+func! ft#clear() abort
+    sil! au! ft *
+endfunc " ft#clear
 " if !exists('g:ft_ft')
 "     let g:ft_ft = 1
 "     runtime autoload/ft.vim      " source itself

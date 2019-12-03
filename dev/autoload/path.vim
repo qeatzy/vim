@@ -37,8 +37,12 @@ func! path#upget(realpath) abort
 endfunc " path#get
 
 func! path#abspath(path) abort
-    return path#simplify_abs(a:path[0] == '/' ? a:path : path#cwd() . '/' . a:path)
+    return path#simplify_abs(a:path[0] ==# '/' ? a:path : path#cwd() . '/' . a:path)
 endfunc " path#abspath
+
+func! path#realpath(abspath) abort
+    return a:abspath ==# '/' ? '/' : resolve(a:abspath)
+endfunc " path#realpath
 
 func! path#simplify_abs(abspath) abort
     if a:abspath =~# '\%(/\|^\)\.\.\%(/\|$\)' " has /../

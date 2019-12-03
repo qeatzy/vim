@@ -98,7 +98,7 @@ endfunc " io#popupinput
 
 func! io#notify(msg) abort
     " let winid = popup_create(a:msg,{'highlight':'PmenuThumb'})
-    let winid = popup_create(['job done.','q to close this message.','gh to switch to result buffer(or tab)','  after that, q will quit that tab'],{'minheight':5,'minwidth':10,'border':[],'padding':[],'highlight':'PmenuThumb'})
+    let winid = popup_create(['job done.','q to close this message.','gh to switch to result buffer(or tab)','  after that, q will quit that tab'],{'time':3000, 'minheight':5,'minwidth':10,'border':[],'padding':[],'highlight':'PmenuThumb'})
     " let winid = popup_create(['job done.','q to close this message.'],{'highlight':'PmenuThumb'})
 endfunc " io#notify
 

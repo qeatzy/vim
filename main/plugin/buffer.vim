@@ -2,7 +2,6 @@
 " use leaderf, ctrlp, or write you own buffer switcher
 
 " au FileType * let $FT= expand('<amatch>') | runtime ft/ft_$FT.vim
-au FileType * ++once let $FT= expand('<amatch>') | runtime ft/ft.vim
 runtime ft/terminal.vim
 " au TerminalOpen * ++once let $TERMNR = expand('<abuf>') | runtime ft/terminal.vim
 " au FileType * ++once call ft#init(expand('<amatch>'))

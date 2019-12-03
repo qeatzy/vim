@@ -1,0 +1,13 @@
+
+Easter Eggs - Vim Wiki
+:help 42
+:help holy-grail
+:help!
+:help map-modes (see comment below the table about :nunmap)
+:help UserGettingBored
+:help spoon
+:help showmatch (read the note)
+:Ni!
+:help bar
+First time noticing the "Help poor Children in Uganda" message. What else have I missed? : vim
+https://www.reddit.com/r/vim/comments/ueu00/first_time_noticing_the_help_poor_children_in/

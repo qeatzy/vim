@@ -1,10 +1,9 @@
 func! setup#init()
     let root = matchstr(&rtp, '^[^,]*') . '/'
     let $ROOT = matchstr(&rtp, '^[^,]*') . '/'
-    sil! call mkdir(root . 'autoload')
-    sil! call mkdir(root . 'bundle')
-    sil! call mkdir(root . '.vimswap')
-    sil! call mkdir(root . '.vimundo')
+    for dir in ['autoload','bundle','.vimswap','.vimundo','tmp']
+        sil! call mkdir(root . dir)
+    endfor
     if has('win32')
         sil! call mkdir(root . 'pkg/bin', 'p')
     endif

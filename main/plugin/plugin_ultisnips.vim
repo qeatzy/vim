@@ -5,7 +5,8 @@
 
 " pu=getcompletion('*Ulti*','var')
 
-let g:UltiSnipsSnippetDirectories = [expand('<sfile>:h:h') . '/snippet']
+let g:UltiSnipsSnippetDirectories = [expand('<sfile>:h:h:h') . '/dev/snippet']
+" pu=g:UltiSnipsSnippetDirectories
 
 " echo g:UltiSnipsUsePythonVersion
 " echo g:ulti_expand_res

@@ -8,6 +8,7 @@ if !exists('*AutoSource')
 endif
 func! AutoSource(filename)
     let filename = len(a:filename) <= 1 ? expand('%') : a:filename
+    let filename = path#abspath(filename)
     echo 'so ' . a:filename
     if !has_key(g:AutoSource, filename)
         exec 'so ' . filename
@@ -28,6 +29,8 @@ endfunc " AutoSource
 func! ft_vim#init()
     " nn <buffer> <F10> :<C-u>echo %<CR>
     nn <buffer> <F10> :<C-u>call AutoSource('%')<CR>
+    nn <buffer> ;c :<C-u>call SetOpfunc('cms#vim')<CR>g@
+    nn <buffer> gc :<C-u>call SetOpfunc('cms#cms_vim')<CR>g@
     setlocal dict+=$ROOT/vim/dev/dict/vim.txt
 " or use tag files, which YCM support.
 " https://github.com/ycm-core/YouCompleteMe/issues/138
@@ -39,6 +42,6 @@ if !exists('ft#vim')
     let ft#vim = 1
     let g:x = bufnr('%')
     call ft_vim#init()  " fix first time being set. see ft.vim
-    autocmd FileType vim call ft_vim#init()
+    autocmd ft FileType vim call ft_vim#init()
 endif
     let ft#vim += 1

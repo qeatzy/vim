@@ -52,4 +52,7 @@ nnoremap <silent> <F2> :<C-u> exec v:count1 == 1 ? getline('.') : join(getline('
 inoremap s <Esc>:up<CR>
 nnoremap s :up<CR>
 
-set viminfo='1024,f1,%1024,h
+if !empty($VIM_TERMINAL)
+    runtime autoload/nested.vim
+endif
+" set viminfo='1024,f1,%1024,h

@@ -78,7 +78,7 @@ augroup pyinter
     inoremap <silent> <buffer> <expr> <C-d> send#termi_key(term#bufnr(b:pyinter), nr2char(getchar()))
     nnoremap <silent> <buffer> <expr> <C-d> send#termi_key(term#bufnr(b:pyinter), nr2char(getchar()))
     " inoremap <silent> <buffer> <CR> <Esc>:call send#term_python_line(term#bufnr(b:pyinter), getline('.'))<CR>o
-    nnoremap <silent> <buffer> <F2> :<C-u>call send#term_lines(term#bufnr(b:pyinter), buf#curline(v:count1))<CR>
+    nnoremap <silent> <buffer> <F2> :<C-u>call send#term_lines(term#bufnr(b:pyinter), var#curline(v:count1))<CR>
     nnoremap <silent> <buffer> <C-u> :<C-u>call term_sendkeys(term#bufnr(b:pyinter), "\<C-u>")<CR>
     nnoremap <silent> <buffer> <C-j> :<C-u>call term_sendkeys(term#bufnr(b:pyinter), getline('.') . "\r")<CR>
     nnoremap <silent> <buffer> <F8> :<C-u>exec 'sb ' . term#bufnr(b:pyinter)<CR>

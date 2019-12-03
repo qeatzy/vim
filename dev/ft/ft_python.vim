@@ -1,3 +1,14 @@
+if exists('g:ft_python')
+    finish
+endif
+let g:ft_python = 1
+au ft filetype python call ft_python#setup()
+
+func! ft_python#setup() abort
+    nn <buffer> ;c :<C-u>call SetOpfunc('cms#python')<CR>g@
+    nn <buffer> gc :<C-u>call SetOpfunc('cms#cms_python')<CR>g@
+endfunc " ft_python#setup
+call ft_python#setup()  " bootstrap
 
 " /cygdrive/e/nnotes/dev/vim/ft/ftplugin/python.vim
 let $PYTHON_EXE='C:/pkg/dt/python3.7.4/python.exe'

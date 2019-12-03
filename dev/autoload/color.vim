@@ -5,6 +5,28 @@
 
 " beside SynStack, add hi xxx output.
 
+let g:color#explore_err = [range(0,255),-1]
+func! color#next_err(step) abort
+    let nr = loop#next(g:color#explore_err, a:step)
+    exec 'hi ErrorMsg term=standout ctermfg=15 ctermbg=' . nr
+    return printf('%3i',nr)
+endfunc " color#next_err
+func! color#explore_err(...) abort
+    if !a:0
+        nn <silent> j :<C-u>exec 'NotExistCommand '. color#next_err(v:count1)<CR>
+        nn <silent> k :<C-u>exec 'NotExistCommand '. color#next_err(-v:count1)<CR>
+        nn <silent> <down> :<C-u>exec 'NotExistCommand '. color#next_err(v:count1)<CR>
+        nn <silent> <up> :<C-u>exec 'NotExistCommand '. color#next_err(-v:count1)<CR>
+        nn q :<C-u>call color#explore_err(1)<CR>
+    else
+        nun <silent> j
+        nun <silent> k
+        nun <silent> <down>
+        nun <silent> <up>
+        nn q :q<CR>
+    endif
+endfunc " color#explore_err
+call color#explore_err()
 
 func! color#explore_hi(...)
 if get(a:, 0) is# 0
@@ -22,8 +44,8 @@ endfunc " color#explore_hi
 
 command! -nargs=0 HI so $VIMRUNTIME/syntax/hitest.vim
 " default color 46 under cygwin is good for ErrorMsg ctermbg.
-hi ErrorMsg term=standout ctermfg=15 ctermbg=36
-hi ErrorMsg term=standout ctermfg=15 ctermbg=24
+" hi ErrorMsg term=standout ctermfg=15 ctermbg=36
+" hi ErrorMsg term=standout ctermfg=15 ctermbg=24
 " call execute(['nmap <buffer> j <C-a><F2>gf','nmap <buffer> k <C-x><F2>gf'])
 " call execute(['nun <buffer> j','nun <buffer> k'])
 " call execute(['nun gt','runtime plugin/buffer.vim'])
