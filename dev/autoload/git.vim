@@ -26,25 +26,43 @@ func! s:sortfns(lst) abort
     return a:lst
 endfunc " s:sortfns
 
-func! s:setline(lst, channel) abort dict
-    call var#setline(self.nr, s:sortfns(a:lst))
-    if bufnr('%') != self.nr
-        exec 'b '. self.nr
-        if &ft !=# 'git' | set ft=git | endif
+func! s:setline(args, channel) abort
+    let [lst, bufnr] = a:args[:1]
+    let lst = get(a:args,2) isnot 0 ? call(a:args[2], [lst]) : lst
+    call var#setline(bufnr, lst)
+    if bufnr('%') != bufnr
+        exec 'b '. bufnr
+        if &ft !=# b:gitft | let &ft = b:gitft | endif
     endif
+    if get(a:args,3) isnot 0 | call call(a:args[3],[]) | endif
 endfunc " s:setline
 
 func! git#status(...) abort dict
     " let g:job = job_start('git status --porcelain', {'out_io':'buffer','out_buf':bufnr('%')})
-    " let g:x = get(g:,'x',[])
-    let g:x = []
-    let g:job = job_start('git status --porcelain', {'cwd':self.root,'out_mode':'nl','out_cb':function('s:receiver', [g:x]),'close_cb':function(self.setline,[g:x])})
+    let lst = []
+    let g:job = job_start('git status --porcelain', {'cwd':self.root,'out_mode':'nl','out_cb':function('s:receiver', [lst]),'close_cb':function('s:setline',[[lst,self.nr]])})
 endfunc " git#status
+
+let s:COMMIT_HEADER = ["",""]
+func! s:prepare_commit(lst) abort
+    let lst = map(a:lst, 'substitute(v:val,"^","# ","")')
+    return s:COMMIT_HEADER + lst
+endfunc " s:prepare_commit
+
+let s:COMMIT_EDITMSG = '/.git/COMMIT_EDITMSG'
+func! git#commit() abort dict
+    let nr = bufadd(self.root . s:COMMIT_EDITMSG)
+    call bufload(nr)
+    call setbufvar(nr, 'gitft', 'gitcommit')
+    let lst = []
+    let g:job = job_start('git commit --dry-run', {'cwd':self.root,'out_mode':'nl','out_cb':function('s:receiver', [lst]),'close_cb':function('s:setline',[[lst,nr,'s:prepare_commit',{->execute('w')}]])})
+endfunc " git#commit
 
 let s:d = {'status': function('git#status'),
     \ 'setline': function('s:setline'),
     \ 'add': function('git#do_files',['add']),
     \ 'reset': function('git#do_files',['reset']),
+    \ 'commit': function('git#commit'),
     \}
 
 let s:roots = get(s:, 'roots', {})
@@ -53,6 +71,7 @@ func! s:add(realpath) abort
     if d is# 0
         let nr = buf#addscratch('')
         call setbufvar(nr, '&path', a:realpath .','. getbufvar(nr,'&path'))
+        call setbufvar(nr, 'gitft', 'git')
         let d = extend(copy(s:d), {'nr': nr,'root': a:realpath})
         let s:roots[a:realpath] = d
         call setbufvar(nr, 'git', d)
@@ -73,3 +92,4 @@ git commit
 1. read input from `git commit --dry-run`
 2. edit
 3. write to `git commit -F -` or `git commit .git/COMMIT_EDITMSG`
+4.  -- use strip mode. (default is strip if edit else whitespace)

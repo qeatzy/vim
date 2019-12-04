@@ -6,6 +6,7 @@ func! ft_git#setup() abort
     nn <buffer> a :<C-u>call b:git.add(var#curline(v:count1))<CR>
     nn <buffer> u :<C-u>call b:git.reset(var#curline(v:count1))<CR>
     nn <buffer> s :<C-u>call b:git.status()<CR>
+    nn <buffer> cc :<C-u>call b:git.commit()<CR>
 endfunc " ft_git#setup
 call ft_git#setup()  " bootstrap
 
