@@ -49,20 +49,37 @@ func! s:prepare_commit(lst) abort
     return s:COMMIT_HEADER + lst
 endfunc " s:prepare_commit
 
-let s:COMMIT_EDITMSG = '/.git/COMMIT_EDITMSG'
-func! git#commit() abort dict
-    let nr = bufadd(self.root . s:COMMIT_EDITMSG)
+func! git#commit_commit(...) abort dict
+    let nr = get(self, 'nr_commit')
+    if getbufvar(nr, '&ft') isnot# 'gitcommit' || getbufvar(nr, '&mod') | return 1 | endif
+    let lines = getbufline(nr, 1, '$')
+    let lines = filter(lines, {k,v -> v =~# '^\s*[^#]'})
+    if empty(lines)
+        echom "commit canceled, due to empty message"
+        return 1
+    endif
+    let cmd = 'git commit --cleanup strip -F '. get(a:,1,'') .' '. s:COMMIT_EDITMSG
+    let g:job = job_start(cmd, {'cwd':self.root,'close_cb':{x -> execute('echo "commited"')}})
+endfunc " git#commit_commit
+
+let s:COMMIT_EDITMSG = '.git/COMMIT_EDITMSG'
+func! git#commit_prepare() abort dict
+    let nr = bufadd(self.root .'/'. s:COMMIT_EDITMSG)
+    let self.nr_commit = nr
     call bufload(nr)
     call setbufvar(nr, 'gitft', 'gitcommit')
+    call setbufvar(nr, 'git', self)
     let lst = []
-    let g:job = job_start('git commit --dry-run', {'cwd':self.root,'out_mode':'nl','out_cb':function('s:receiver', [lst]),'close_cb':function('s:setline',[[lst,nr,'s:prepare_commit',{->execute('w')}]])})
-endfunc " git#commit
+    let cmd = 'git commit --dry-run '
+    let g:job = job_start(cmd, {'cwd':self.root,'out_mode':'nl','out_cb':function('s:receiver', [lst]),'close_cb':function('s:setline',[[lst,nr,'s:prepare_commit',{->execute('w')}]])})
+endfunc " git#commit_prepare
 
 let s:d = {'status': function('git#status'),
     \ 'setline': function('s:setline'),
     \ 'add': function('git#do_files',['add']),
     \ 'reset': function('git#do_files',['reset']),
-    \ 'commit': function('git#commit'),
+    \ 'commit': function('git#commit_prepare'),
+    \ 'commit_commit': function('git#commit_commit'),
     \}
 
 let s:roots = get(s:, 'roots', {})
