@@ -6,7 +6,7 @@ let g:rdh_dirs = get(g:, 'rdh_dirs', {})
 
 func! dirbuf#goparent(cnt) abort
     let path = expand('%')
-    if path == '' | let path = path#cwd() | endif
+    if path == '' | let path = path#cwd() . '/xx' | endif
     let isdir = isdirectory(path)
     if isdir
         let g:lastpath = path
