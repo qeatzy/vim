@@ -1,4 +1,32 @@
 
+func! buf#qo() abort
+    if winnr('$') > 1
+        echom ":only"
+        only
+    elseif &buftype ==# 'terminal'
+        echom "call term_sendkeys('', 'qo')"
+        call term_sendkeys(bufnr('%'), 'qo')
+        " call feedkeys('qo', 'n')
+    endif
+endfunc " buf#qo
+
+func! buf#go() abort
+    if winnr('$') > 1
+        winc w
+    else
+        if &bt ==# 'terminal'
+            call term_sendkeys(bufnr('%'), 'go')
+        endif
+    endif
+endfunc " buf#go
+
+func! buf#close_if_term_window() abort
+    if &buftype !=# 'terminal' || winnr('$') == 1
+        return
+    endif
+    close
+endfunc " buf#close_if_term_window
+
 if !exists('g:scratch')
     let g:scratch = []
     let s:idx = -1
@@ -18,13 +46,41 @@ func! Scratch()
     return nr
 endfunc
 
-func! buf#nextscratch() abort
-    if len(g:scratch) < 10
+func! buf#nextscratch(...) abort
+    let nth = a:0 ? a:1 : 0
+    if nth > len(g:scratch) || (nth == 0 && len(g:scratch) < 10)
         call add(g:scratch, buf#addscratch())
     endif
-    let s:idx += 1
-    if s:idx >= len(g:scratch) | let s:idx = -1 | endif
-    return g:scratch[s:idx]
+    if nth == 0
+        let s:idx += 1
+        if s:idx >= len(g:scratch) | let s:idx = -1 | endif
+        return g:scratch[s:idx]
+    else
+        return g:scratch[nth % len(g:scratch)]
+    endif
+endfunc
+
+" nn ;s :<C-u>exec 'b '. buf#nextscratch(v:count)<CR>
+
+" nnoremap <F4> :<C-u>call buf#Toggle_diff_alternate_buffer()<CR>
+func! buf#Toggle_diff_alternate_buffer() abort
+    "-- feature: possibly return to previous position.
+    if &diff
+        diffoff!
+        if winnr('$') > 1
+            close
+        endif
+        set noscrollbind nocursorbind nocursorcolumn nocursorline
+    else
+        vsp
+        b #
+        diffthis
+        set scrollbind cursorbind cursorcolumn cursorline
+        winc p
+        diffthis
+        set scrollbind cursorbind cursorcolumn cursorline
+        winc p
+    endif
 endfunc
 
 
@@ -86,7 +142,7 @@ function! s:GetName() abort
     return g:username
 endfunction
 
-nnoremap <F1> :<c-u>echo 33 <C-\>e<sid>GetName()<CR>
+" nnoremap <F1> :<c-u>echo 33 <C-\>e<sid>GetName()<CR>
 
             " \:<c-u>call <sid>GetName()<cr>
             " \:<c-u>execute 'normal! a ' . g:username .

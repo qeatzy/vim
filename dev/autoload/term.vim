@@ -159,9 +159,18 @@ func! term#switch(nth) abort
     elseif a:nth is# 'd'
         let g:toswitch = g:lastswitch
     elseif a:nth is# 'c'
+        let g:lastswitch = bufnr('%')
         let cmd = get(g:, 'term', 'zsh')
-        let nr = term_start(cmd, {'exit_cb':function('s:Cb_exit_cb')})
+        let opt = {'exit_cb':function('s:Cb_exit_cb')}
+        if exists('b:dirbuf') | call extend(opt, {'cwd': b:dirbuf}) | endif
+        let nr = term_start(cmd, opt)
         call term#add(nr, cmd)
+        let g:toswitch = -1
+    elseif a:nth is# 'q'
+        call buf#close_if_term_window()
+    elseif a:nth is# 's'
+        sbuffer #
+        winc p
     else
         let idx = index(nrs, bufnr('%'))
         if a:nth is# 'n'
@@ -178,15 +187,22 @@ func! term#switch(nth) abort
             endif
         elseif a:nth is# 'l'
             echo idx == -1 ? 0 : printf("[%d of %d]", idx + 1, len(nrs))
+        elseif a:nth is# 'x'
+            if idx != -1
+                bd! %
+            endif
         endif
     endif
-    if g:toswitch
+    if g:toswitch > 0
         " if a:nth is# 'd'
             let nr = bufnr('%')
             let g:lastswitch = nr
         exec 'b ' g:toswitch
     endif
-endfunc
+    if g:toswitch
+        call term#switch('l')
+    endif
+endfunc " term#switch
 
 
 " arglist : [ cwd ]
@@ -202,3 +218,27 @@ function! Tapi_lcd(bufnum, arglist)
   " call path#updatecwd(cwd)
   exec 'cd ' . cwd
 endfunction
+
+" h terminal-api
+" 	<Esc>]51;["drop", "README.md"]<07>
+" The <Esc>]51;msg<07> sequence is reserved by xterm for "Emacs shell", which is
+func! Tapi_openfile(bufnr, args) abort
+    " args: filename, lineno or pattern
+    let args = type(a:args) == 3 ? a:args : [a:args]
+    let g:x = args
+    let len = len(args)
+    if len > 0
+        let nr = bufadd(args[0])
+        if !bufloaded(nr) | call bufload(nr) | endif
+        call setbufvar(nr, '&buflisted', 1)
+        let lineno = get(args, 1)
+        if lineno > 0
+            exec 'b ' . nr
+            exec lineno + 0
+            " b #
+            exec 'b ' . a:bufnr
+        endif
+        let g:nr = nr
+    endif
+endfunc " Tapi_openfile
+    " echo "\033]51;[call, Tapi_openfile, [55]]\007"

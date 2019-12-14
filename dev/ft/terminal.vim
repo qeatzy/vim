@@ -36,8 +36,9 @@ if $depth <= 1
     " inoremap <silent> <C-z> <C-o>:call term#switch_to_term_buffer(v:count)<CR>
     " tnoremap <silent> <C-^> <C-w>:b #<CR>
     tnoremap <silent> <C-^> <C-w>:<C-u>call term#switch_to_term_buffer('cycle')<CR>
-    tnoremap go <C-w><C-w>|" cause problem when paste, eg, https://github.com/goldfeld/vim-seek
-    tnoremap qo <C-w><C-o>
+    " tnoremap go <C-w><C-w>|" cause problem when paste, eg, https://github.com/goldfeld/vim-seek
+    tnoremap <silent> go <C-w>:call buf#go()<CR>
+    tnoremap <silent> qo <C-w>:call buf#qo()<CR>
 elseif $depth == 2
     set termwinkey=<C-L>
     tnoremap jj <C-L>N

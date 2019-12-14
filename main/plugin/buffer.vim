@@ -15,6 +15,12 @@ call CmdAlias('fg', ' norm! ')
 nn 'e :<C-u>call buf#gmarkbuf('e')<CR>
 nn me mE
 
+nn <silent> qo :<C-u>call buf#qo()<CR>
+
+nn <silent> go <C-w>:call buf#go()<CR>
+
+nn qn :<C-u>setl bt=nofile<CR>
+
 func! Buf_go_buffer(count) abort
     let l:count = (a:count == 0)? bufnr('#') : a:count
     if l:count == -1 || l:count == bufnr('%')
