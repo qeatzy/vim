@@ -1,4 +1,25 @@
 
+func! run#ag_root(...) abort
+    return path#abspath(expand('%:p:h'))
+endfunc " run#ag_root
+
+func! run#ag(...) abort
+    " let cmd = extend(['ag '], a:000)
+    " let cmd = 'git status'
+    " let cmd = 'ag --nocolor'
+    let cwd = run#ag_root()
+    let cmd = a:0 ? 'ag '. ( join(a:000, ' ') . ' ' . cwd) : 'ag'
+    let g:cmd = cmd
+    let lst = []
+    let nr = buf#addscratch('ag')
+    let g:job = job_start(cmd, {'cwd':cwd,'out_mode':'nl','callback':function('channel#receiver', [lst]),'close_cb':function('channel#setline',[[lst,nr]])})
+endfunc " run#ag
+
+" breakdel * | breakadd func 5 run#ag
+" breakdel * | breakadd func channel#setline
+" debug Ack setline
+" Ack setline
+
 func! run#cmdhist() abort
     let x = map(copy(g:scratch), 'getbufvar(v:val, "runcmd")')
     return x
@@ -85,7 +106,7 @@ func! run#GetInputCommandThenCaptureAndPut()
             " exec 'r!' cmd
             call CaptureShellCommand(cmd)
         endif
-    elseif cmd =~ '^	[[.a-zA-z0-9].*'  " leading '<Tab>' key, execute shell command, witout capture.
+    elseif cmd =~ '^    [[.a-zA-z0-9].*'  " leading '<Tab>' key, execute shell command, witout capture.
         exec '!' cmd
     else
         if strlen(cmd) == 1     " customized shortcut
