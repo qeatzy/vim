@@ -13,10 +13,36 @@ let stl .= '%0* %{IsBuffersModified()}%r%w %P '                      " Modified?
 return stl
 endfunc " stl#default
 
+func! stl#0()
+let stl = '%{ShowCount(999)}'
+let stl .= '%7*[%n]'                                " buffernr
+let stl .= '%1*%-10.30f '                           " File+path
+let stl .= '%2*%< %y '                              " FileType
+let stl .= "%3* %{''.(&fenc!=''?&fenc:&enc).''}"    " Encoding
+let stl .= '%3* %{(&bomb?",BOM":"")} '              " Encoding2
+let stl .= '%4* %{(&ff=="unix"?"":&ff)} '           " FileFormat (dos/unix..) 
+let stl .= '%8* %= %l/%L [%02p%%]'                  " Rownumber/total (%)
+let stl .= '%9* %03c '                              " Colnr
+let stl .= '%{LineCountCurrentParagraph()}'
+let stl .= '%0* %{IsBuffersModified()}%r%w %P '     " Modified? Readonly? Top/bot.
+let &stl = stl
+endfunc " stl#0
+
 func! stl#1()
-    echo 'hello'
+let stl = '%{ShowCount(999)}'
+let stl .= '%-'. (&columns * 7/9) .'.(%2*[%n]'      " buffernr
+let stl .= '%-10.30f '                              " File+path
+let stl .= '%y '                                 " FileType
+let stl .= ' %{&fenc!=""?&fenc:&enc}'               " Encoding
+let stl .= ' %{&ff=="unix"?"":&ff} %< '                " FileFormat (dos/unix..) 
+let stl .= '%) %{strftime("%H:%M")} '
+let stl .= ' %= %l/%L [%02p%%]'                     " Rownumber/total (%)
+let stl .= ' %03c '                                 " Colnr
+let stl .= '%{LineCountCurrentParagraph()}'
+let stl .= '%0* %{IsBuffersModified()}%r%w %P '     " Modified? Readonly? Top/bot.
+let &stl = stl
 endfunc " stl#1
-" call stl#1()
+call stl#1()
 
 finish
 

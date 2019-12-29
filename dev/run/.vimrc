@@ -12,8 +12,3 @@ if has('win32')
 endif
 
 call entry3#init()
-
-if has('gui')
-    runtime autoload/gvim.vim
-endif
-
