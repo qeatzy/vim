@@ -1,4 +1,54 @@
 
+let g:bufnrs = get(g:, 'bufnrs', [])
+func! buf#enter(bufnr, ...) abort
+    let type = a:0 ? a:1 : getbufvar(a:bufnr, '&ft')
+    " echom [a:bufnr, type, term_getjob(a:bufnr), 'buf#enter']
+    " if &bt ==# 'terminal' # set after called
+    " if term_getjob(a:bufnr) != v:null
+    if type ==# 'terminal'
+        call term#BufEnter(a:bufnr)
+    elseif type ==# 'dirbuf'
+    else
+        call list#remove(g:bufnrs, a:bufnr)
+        call add(g:bufnrs, a:bufnr)
+    endif
+endfunc " buf#enter
+
+func! buf#leave(bufnr, ...) abort
+    let type = a:0 ? a:1 : getbufvar(a:bufnr, '&ft')
+    if type ==# 'terminal'
+        call term#BufLeave(a:bufnr)
+    elseif type ==# 'dirbuf'
+    else
+    endif
+endfunc " buf#leave
+
+func! buf#delete(bufnr, ...) abort
+    let type = a:0 ? a:1 : getbufvar(a:bufnr, '&ft')
+    " echom [a:bufnr, type, term_getjob(a:bufnr), 'buf#delete']
+    if type ==# 'terminal'
+        call term#BufDelete(a:bufnr)
+    elseif type ==# 'dirbuf'
+    else
+    endif
+endfunc " buf#delete
+
+func! buf#nr(type) abort
+    if a:type ==# 'normal'
+        return get(g:bufnrs, -1, 1)
+    endif
+endfunc " buf#nr
+
+func! buf#c_w() abort
+    if &buftype ==# 'terminal'
+        call term_sendkeys(bufnr('%'), "\<C-w>")
+    else
+        if winnr('$') > 1
+            call feedkeys("\<C-w>", 'n')
+        endif
+    endif
+endfunc " buf#c_w
+
 func! buf#qo() abort
     if winnr('$') > 1
         echom ":only"
@@ -14,7 +64,7 @@ func! buf#go() abort
     if winnr('$') > 1
         winc w
     else
-        if &bt ==# 'terminal'
+        if &buftype ==# 'terminal'
             call term_sendkeys(bufnr('%'), 'go')
         endif
     endif

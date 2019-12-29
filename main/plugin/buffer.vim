@@ -1,6 +1,12 @@
 
 " use leaderf, ctrlp, or write you own buffer switcher
 
+
+autocmd BufEnter * call buf#enter(0+expand('<abuf>'))
+autocmd BufLeave * call buf#leave(0+expand('<abuf>'))
+autocmd BufDelete * call buf#delete(0+expand('<abuf>'))
+au TerminalOpen *  call term#TerminalOpen(0+expand('<abuf>'))
+
 " au FileType * let $FT= expand('<amatch>') | runtime ft/ft_$FT.vim
 runtime ft/terminal.vim
 " au TerminalOpen * ++once let $TERMNR = expand('<abuf>') | runtime ft/terminal.vim
@@ -18,6 +24,9 @@ nn me mE
 nn <silent> qo :<C-u>call buf#qo()<CR>
 
 nn <silent> go <C-w>:call buf#go()<CR>
+
+nn <silent> <C-w> :<C-u>call buf#c_w()<CR>
+tno <silent> <C-w> <C-w>:call buf#c_w()<CR>
 
 nn qn :<C-u>setl bt=nofile<CR>
 
