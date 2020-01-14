@@ -120,6 +120,10 @@ function! Tapi_lcd(bufnum, arglist)
   exec 'cd ' . cwd
 endfunction
 
+func! Tapi_bvar_dirbuf(bufnum, arglist) abort
+    call setbufvar(a:bufnum, 'dirbuf', a:arglist[0])
+endfunc " Tapi_bvar_dirbuf(bufnum, arglist)
+
 " h terminal-api
 " 	<Esc>]51;["drop", "README.md"]<07>
 " The <Esc>]51;msg<07> sequence is reserved by xterm for "Emacs shell", which is

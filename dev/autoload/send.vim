@@ -27,8 +27,8 @@ func! s:Cb_isTermDirty(prompt)
     if Callback is# 0 | let Callback = s:Cb_isTermDirty[''] | endif
     return Callback(a:prompt)
 endfunc " s:Cb_isTermDirty = {'': {cmd -> cmd is# ''}}
-let x = getbufline(38,'$')[0]
-echo x[-2:]
+" let x = getbufline(38,'$')[0]
+" echo x[-2:]
 
 func! send#termi_python_line(bufnr, ...)
 " let [g:a,g:b] = [col('.'), col('$')]
@@ -69,30 +69,27 @@ func! send#term_lines(bufnr, lines)
 endfunc " send#term_lines
 
 func! send#init()
-augroup pyinter
+augroup send_term
     autocmd!
-    inoremap <silent> <buffer> <expr> <CR> send#termi_python_line(term#bufnr(b:pyinter))
-    inoremap <silent> <buffer> <expr>  send#termi_python_line(term#bufnr(b:pyinter), "\<End>")|" on cygwin, <C-Enter>
-    inoremap <silent> <buffer> <expr> <C-p> send#termi_key(term#bufnr(b:pyinter), "\<C-p>")
-    inoremap <silent> <buffer> <expr> <C-n> send#termi_key(term#bufnr(b:pyinter), "\<C-n>")
-    inoremap <silent> <buffer> <expr> <C-d> send#termi_key(term#bufnr(b:pyinter), nr2char(getchar()))
-    nnoremap <silent> <buffer> <expr> <C-d> send#termi_key(term#bufnr(b:pyinter), nr2char(getchar()))
-    " inoremap <silent> <buffer> <CR> <Esc>:call send#term_python_line(term#bufnr(b:pyinter), getline('.'))<CR>o
-    nnoremap <silent> <buffer> <F2> :<C-u>call send#term_lines(term#bufnr(b:pyinter), var#curline(v:count1))<CR>
-    nnoremap <silent> <buffer> <C-u> :<C-u>call term_sendkeys(term#bufnr(b:pyinter), "\<C-u>")<CR>
-    nnoremap <silent> <buffer> <C-j> :<C-u>call term_sendkeys(term#bufnr(b:pyinter), getline('.') . "\r")<CR>
-    nnoremap <silent> <buffer> <F8> :<C-u>exec 'sb ' . term#bufnr(b:pyinter)<CR>
-    nnoremap <silent> <buffer> <F12> :<C-u>call term#remove(term#bufnr(b:pyinter), 'kill')<CR>
-    try | call term#bufnr(b:pyinter) | catch /E684/ | endtry
+    inoremap <silent> <buffer> <expr> <CR> send#termi_python_line(b:termnr)
+    inoremap <silent> <buffer> <expr>  send#termi_python_line(b:termnr, "\<End>")|" on cygwin, <C-Enter>
+    inoremap <silent> <buffer> <expr> <C-p> send#termi_key(b:termnr, "\<C-p>")
+    inoremap <silent> <buffer> <expr> <C-n> send#termi_key(b:termnr, "\<C-n>")
+    inoremap <silent> <buffer> <expr> <C-d> send#termi_key(b:termnr, nr2char(getchar()))
+    nnoremap <silent> <buffer> <expr> <C-d> send#termi_key(b:termnr, nr2char(getchar()))
+    " inoremap <silent> <buffer> <CR> <Esc>:call send#term_python_line(b:termnr, getline('.'))<CR>o
+    nnoremap <silent> <buffer> <F2> :<C-u>call send#term_lines(b:termnr, var#curline(v:count1))<CR>
+    nnoremap <silent> <buffer> <C-u> :<C-u>call term_sendkeys(b:termnr, "\<C-u>")<CR>
+    nnoremap <silent> <buffer> <C-j> :<C-u>call term_sendkeys(b:termnr, getline('.') . "\r")<CR>
+    nnoremap <silent> <buffer> <F8> :<C-u>exec 'sb ' . b:termnr<CR>
+    nnoremap <silent> <buffer> <F12> :<C-u>call term#remove(b:termnr, 'kill')<CR>
     " E684: list index out of range: -1
     " usage, i: <C-o><C-j> to send current line, without move cursor
     " <C-d> key to send any key.
-augroup END " pyinter
+augroup END " send_term
 endfunc " send#init
 
-" au filetype pyinter call send#pyinter()
-func! send#pyinter(...)
-    let b:pyinter = a:0 ? a:1 : 'python3'
+func! send#term()
     call send#init()
     return ''
-endfunc " send#pyinter
+endfunc " send#term
